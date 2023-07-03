@@ -1,10 +1,10 @@
 import G6, { TreeGraph } from "@antv/g6";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import FloatingWindow from "../../components/Graph/FloatingWindow";
+import { useEffect, useMemo, useRef, useState } from "react";
+import FloatingWindow from "../components/Graph/FloatingWindow";
 import { observer } from "mobx-react-lite";
-import graphStore from "../../stores/graph";
+import graphStore from "../stores/graph";
 
-const Graph = observer( () => {
+const Graph = observer(() => {
   const graphContainer = useRef<HTMLDivElement>(null);
   const graph = useRef<TreeGraph>();
   const [title, setTitle] = useState("");
@@ -38,7 +38,7 @@ const Graph = observer( () => {
           id: title,
           label: title,
         },
-        graphStore.currentId,
+        graphStore.currentId
       );
   }
 
@@ -93,7 +93,7 @@ const Graph = observer( () => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
         graph.current.setItemState(graphStore.currentId, "focus", false);
-        graphStore.changeId(item._cfg.id as string)
+        graphStore.changeId(item._cfg.id as string);
         graph.current.setItemState(item, "focus", true);
         setCurrentPos({
           top: evt.clientY,

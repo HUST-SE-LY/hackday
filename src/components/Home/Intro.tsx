@@ -1,16 +1,41 @@
 import { ElementRef, useRef, useState } from "react";
 import PhysicsCanvas from "./Intro/PhsicsCanvas";
+import rightArrow from "../../assets/rightArrow.svg";
 
 const Intro = () => {
-  const physicsCanvas = useRef<ElementRef<typeof PhysicsCanvas>>(null)
+  const physicsCanvas = useRef<ElementRef<typeof PhysicsCanvas>>(null);
   const [keyWord, setKeyWord] = useState("");
+  function submit() {
+    keyWord && physicsCanvas.current?.addBox(keyWord);
+    setKeyWord("");
+  }
   return (
-    <div className=" snap-start flex justify-center items-center w-screen h-screen">
-      <div className="relative w-[500px] h-[500px] flex justify-center items-center">
+    <div className=" snap-start flex w-screen h-screen">
+      <div className="relative w-[900px] flex-shrink-0  h-[full] flex justify-center items-center">
         <PhysicsCanvas ref={physicsCanvas} />
       </div>
-      <input className="border" value={keyWord} onChange={e => setKeyWord(e.target.value)}  />    
-      <button onClick={() => physicsCanvas.current?.addBox(keyWord)}>提交</button>  
+      <div className="bg-black gap-[110px] flex justify-center flex-col items-center  h-full ml-[auto] w-full">
+        <div className="flex items-center">
+          <input
+            value={keyWord}
+            onChange={(e) => setKeyWord(e.target.value)}
+            className="block text-lg w-[20rem] h-[3rem] rounded-[5px_0_0_5px] outline-none pl-[2rem] "
+            placeholder="测试关键词"
+            type="text"
+          />
+          <button
+            onClick={() => {
+              submit()
+            }}
+            className="flex justify-center items-center bg-[#4318FF] h-[3rem] w-[4rem] rounded-[0_5px_5px_0]"
+          >
+            <img className=" scale-50" src={rightArrow} />
+          </button>
+        </div>
+        <p className="text-white leading-[2rem] w-[24rem] text-lg">
+          测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
+        </p>
+      </div>
     </div>
   );
 };

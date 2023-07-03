@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Matter from "matter-js";
-import { Ref, forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { Ref, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import keywordsAssociation from "../../../assets/keywordsAssociation.svg"
+import keywordsAssociationZh from "../../../assets/keywordsAssociationZh.svg"
 
 const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => void}>) => {
   const ground = useRef<HTMLDivElement>(null);
@@ -8,18 +10,22 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
   const leftBorder = useRef<HTMLDivElement>(null);
   const rightBorder = useRef<HTMLDivElement>(null);
   const engine = useMemo(() => Matter.Engine.create(),[]);
+  const [frictionAir, setFrictionAir] = useState(0);
   useImperativeHandle(ref, () => ({
     addBox(keyword: string) {
       const boxContainer  =document.createElement("div");
-      boxContainer.className = "absolute w-[100px] h-[30px] rounded-full text-center leading-[30px] border-[1px] border-blue-200";
+      boxContainer.className = "absolute w-[200px] text-center text-[24px] h-[70px] rounded-[10px] text-center leading-[70px] border-[1px] border-black";
+      boxContainer.style.width = `${24*keyword.length+48}px`
       boxContainer.innerText = keyword;
       container.current!.appendChild(boxContainer)
+      setFrictionAir(frictionAir+0.01);
       const box = {
-        w: 100,
-        h: 30,
+        w: 24*keyword.length+48,
+        h: 70,
         body: Matter.Bodies.rectangle(
-          Math.pow(-1, Math.floor(Math.random()*2))*200*Math.random(), 0, 100, 30,{
-            chamfer: { radius: 15 }
+          900*Math.random(), 0, 24*keyword.length+48, 70,{
+            chamfer: { radius: 10 },
+            frictionAir: frictionAir
           }
         ),
         elem: boxContainer,
@@ -36,7 +42,7 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
       (function rerender() {
         box.render();
         Matter.Engine.update(engine);
-        requestAnimationFrame(rerender)
+       requestAnimationFrame(rerender);
       })()
       
     
@@ -44,11 +50,12 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
   }))
   
   useEffect(() => {
+    
     const groundRec = {
-      w: 500,
+      w: 900,
       h: 20,
       body: Matter.Bodies.rectangle(
-        0, 500, 500, 20, {isStatic: true}
+        450, 700, 900, 20, {isStatic: true}
       ),
       elem: ground.current!,
       render() {
@@ -61,9 +68,9 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
 
     const left = {
       w: 1,
-      h: 500,
+      h: 1900,
       body: Matter.Bodies.rectangle(
-        -250, 250, 1, 500, {isStatic: true}
+        0, 700, 1, 1900, {isStatic: true}
       ),
       elem: leftBorder.current!,
       render() {
@@ -77,9 +84,9 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
 
     const right = {
       w: 1,
-      h: 500,
+      h: 1900,
       body: Matter.Bodies.rectangle(
-        250, 250, 1, 500, {isStatic: true}
+        900, 700, 1, 1900, {isStatic: true}
       ),
       elem: rightBorder.current!,
       render() {
@@ -103,10 +110,15 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
       requestAnimationFrame(rerender);
     })();
   },[engine])
-  return <div ref={container}>
-    <div ref={rightBorder} className="h-[500px] w-[1px] absolute bg-blue-200"></div>
-    <div ref={leftBorder} className="h-[500px] w-[1px] absolute bg-blue-200"></div>
-    <div ref={ground} className="bg-blue-300 absolute w-[500px] h-[20px]"></div>
+  return <div className="w-full h-full" ref={container}>
+    <div className="absolute top-[50px] left-[40px]">
+      <img src={keywordsAssociation} alt="" />
+      <img src={keywordsAssociationZh} className="mt-[20px]" alt="" />
+    </div>
+    
+    <div ref={rightBorder} className="h-[900px] w-[1px] absolute"></div>
+    <div ref={leftBorder} className="h-[900px] w-[1px] absolute "></div>
+    <div ref={ground} className="bg-black absolute w-[900px] h-[20px]"></div>
   </div>;
 });
 
