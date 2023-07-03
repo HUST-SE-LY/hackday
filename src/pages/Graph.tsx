@@ -1,5 +1,5 @@
-import G6, { TreeGraph } from "@antv/g6";
-import { useEffect, useMemo, useRef, useState } from "react";
+import G6, { NodeConfig, TreeGraph } from "@antv/g6";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
@@ -13,16 +13,42 @@ const Graph = observer(() => {
     top: 0,
     left: 0,
   });
+  const changeMod = useCallback(() => {
+    if(graph.current) {
+      graphStore.changeMode();
+      G6.Util.traverseTree(data, (subtree:NodeConfig) => {
+        console.log(subtree.id)
+        graph.current?.updateItem(subtree.id, {
+          type: 'circle',
+        })
+      })
+      graph.current.updateLayout({
+        type: "dendrogram",
+        direction: "LR",
+        radial: true,
+        nodeSep: 100,
+        rankSep: 100,
+      })
+      console.log(data)
+      graph.current.fitView()
+      graph.current.paint()
+
+    }
+
+  },[])
   const data = useMemo(
     () => ({
       id: "root",
       label: "root",
+      type: 'circle',
       children: [
         {
+          type: 'rect',
           id: "child1",
           label: "child1",
         },
         {
+          type: 'rect',
           id: "child2",
           label: "child2",
         },
@@ -37,9 +63,11 @@ const Graph = observer(() => {
         {
           id: title,
           label: title,
+          type: graphStore.currentMode === 'mindmap' ? 'rect' : 'circle'
         },
         graphStore.currentId
       );
+    graph.current?.fitView()
   }
 
   useEffect(() => {
@@ -48,16 +76,6 @@ const Graph = observer(() => {
       container: graphContainer.current!, // 指定挂载容器
       width: 800, // 图的宽度
       height: 500, // 图的高度
-      defaultNode: {
-        type: "rect",
-        style: {
-          radius: 10,
-        },
-        anchorPoints: [
-          [0, 0.5],
-          [1, 0.5],
-        ],
-      },
       nodeStateStyles: {
         hover: {
           fill: "rgb(233, 213, 255)",
@@ -68,13 +86,17 @@ const Graph = observer(() => {
         },
       },
       defaultEdge: {
-        type: "cubic-horizontal",
+        
       },
       layout: {
         type: "mindmap",
+        direction: "H",
         getHGap: () => {
           return 50;
         },
+        getVGap:() => {
+          return 50
+        }
       },
     });
     graph.current.data(data);
@@ -92,6 +114,7 @@ const Graph = observer(() => {
     graph.current.on("click", (evt) => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
+        console.log(item)
         graph.current.setItemState(graphStore.currentId, "focus", false);
         graphStore.changeId(item._cfg.id as string);
         graph.current.setItemState(item, "focus", true);
@@ -122,6 +145,12 @@ const Graph = observer(() => {
         className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
       >
         添加节点
+      </button>
+      <button
+        onClick={changeMod}
+        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
+      >
+        切换状态
       </button>
     </div>
   );

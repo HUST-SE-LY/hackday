@@ -50,21 +50,6 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
   }))
   
   useEffect(() => {
-    
-    const groundRec = {
-      w: 900,
-      h: 20,
-      body: Matter.Bodies.rectangle(
-        450, 700, 900, 20, {isStatic: true}
-      ),
-      elem: ground.current!,
-      render() {
-        const {x, y} = this.body.position;
-        this.elem.style.top = `${y - this.h / 2}px`;
-        this.elem.style.left = `${x - this.w / 2}px`;
-        this.elem.style.transform = `rotate(${this.body.angle}rad)`;
-      },
-    };
 
     const left = {
       w: 1,
@@ -99,16 +84,43 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
     };
 
     Matter.Composite.add(
-      engine.world, [groundRec.body,left.body, right.body]
+      engine.world, [left.body, right.body]
     );
 
     (function rerender() {
-      groundRec.render();
       left.render();
       right.render();
       Matter.Engine.update(engine);
       requestAnimationFrame(rerender);
     })();
+    
+  },[engine])
+
+  useEffect(() => {
+    if(container.current&&container.current.clientHeight) {
+      const groundRec = {
+        w: 900,
+        h: 20,
+        body: Matter.Bodies.rectangle(
+          450, container.current.clientHeight, 900, 20, {isStatic: true}
+        ),
+        elem: ground.current!,
+        render() {
+          const {x, y} = this.body.position;
+          this.elem.style.top = `${y - this.h / 2}px`;
+          this.elem.style.left = `${x - this.w / 2}px`;
+          this.elem.style.transform = `rotate(${this.body.angle}rad)`;
+        },
+      };
+      Matter.Composite.add(
+        engine.world, [groundRec.body]
+      );
+      (function rerender() {
+        groundRec.render();
+        Matter.Engine.update(engine);
+        requestAnimationFrame(rerender);
+      })();
+    }
   },[engine])
   return <div className="w-full h-full" ref={container}>
     <div className="absolute top-[50px] left-[40px]">

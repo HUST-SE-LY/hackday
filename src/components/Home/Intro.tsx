@@ -1,16 +1,42 @@
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import PhysicsCanvas from "./Intro/PhsicsCanvas";
 import rightArrow from "../../assets/rightArrow.svg";
+
 
 const Intro = () => {
   const physicsCanvas = useRef<ElementRef<typeof PhysicsCanvas>>(null);
   const [keyWord, setKeyWord] = useState("");
+  const container = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if(container.current) {
+      const observer = new IntersectionObserver((entries) => {
+        if(entries[0].intersectionRatio > 0) {
+          console.log("ok")
+          if (physicsCanvas.current) {
+            physicsCanvas.current.addBox("疯狂星期四");
+            setTimeout(() => {
+              if (physicsCanvas.current) {
+                physicsCanvas.current.addBox("肯德基");
+                physicsCanvas.current.addBox("麦当劳");
+                physicsCanvas.current.addBox("华莱士");
+              }
+            }, 1000);
+            observer.disconnect();
+          }
+        }
+      },{
+        threshold: [0,0.1,0.2]
+      })
+      observer.observe(container.current)
+    }
+  },[])
   function submit() {
     keyWord && physicsCanvas.current?.addBox(keyWord);
     setKeyWord("");
   }
+
   return (
-    <div className=" snap-start flex w-screen h-screen">
+    <div ref={container} className=" snap-start flex w-screen h-screen">
       <div className="relative w-[900px] flex-shrink-0  h-[full] flex justify-center items-center">
         <PhysicsCanvas ref={physicsCanvas} />
       </div>
@@ -25,7 +51,7 @@ const Intro = () => {
           />
           <button
             onClick={() => {
-              submit()
+              submit();
             }}
             className="flex justify-center items-center bg-[#4318FF] h-[3rem] w-[4rem] rounded-[0_5px_5px_0]"
           >
