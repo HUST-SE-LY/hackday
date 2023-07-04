@@ -16,6 +16,7 @@ const Graph = observer(() => {
   const [showInfo, setShowInfo] = useState(false);
   const [currentInfo, setCurrentInfo] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [infoLabels, setInfoLabels] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [currentPos, setCurrentPos] = useState({
     top: 0,
@@ -184,12 +185,12 @@ const Graph = observer(() => {
   }
 
   const exportImage = useCallback(() => {
-    if(graph.current) {
-      graph.current.downloadFullImage('mindMap-Aidea', 'image/png', {
+    if (graph.current) {
+      graph.current.downloadFullImage("mindMap-Aidea", "image/png", {
         padding: [30, 15, 15, 15],
       });
     }
-  },[])
+  }, []);
 
   useEffect(() => {
     const map = new Map<string, string>();
@@ -203,7 +204,10 @@ const Graph = observer(() => {
       },
       nodeStateStyles: {
         hover: {
-          opacity: 0.75,
+          shadowColor: "#4318FF",
+          shadowBlur: 20,
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
         },
         focus: {
           stroke: "#4318FF",
@@ -258,6 +262,7 @@ const Graph = observer(() => {
     graph.current.on("node:mouseenter", (evt) => {
       let { item } = evt;
       if (graph.current && item) {
+        const labels: string[] = [];
         graphStore.hover(item._cfg!.id!);
         setShowInfo(true);
         setCurrentInfo(map.get(item._cfg!.id!) || "没有关联到该点的逻辑");
@@ -267,8 +272,10 @@ const Graph = observer(() => {
         });
         while (item) {
           graph.current.setItemState(item, "hover", true);
+          labels.push(item._cfg!.model!.label as string);
           item = item._cfg!.parent;
         }
+        setInfoLabels(labels.join(" "));
       }
     });
 
@@ -324,11 +331,9 @@ const Graph = observer(() => {
     });
   }, [data]);
 
-
-
   return (
     <div className="flex flex-col relative justify-center items-center gap-[1rem]">
-      <Navigator onExport={exportImage}  changeMode={changeMod}></Navigator>
+      <Navigator onExport={exportImage} changeMode={changeMod}></Navigator>
       <div ref={graphContainer}></div>
       {showInput ? (
         <input
@@ -354,7 +359,9 @@ const Graph = observer(() => {
           {...currentPos}
         />
       ) : null}
-      {showInfo ? <Info {...InfoPos} currentInfo={currentInfo} /> : null}
+      {showInfo ? (
+        <Info {...InfoPos} labels={infoLabels} currentInfo={currentInfo} />
+      ) : null}
     </div>
   );
 });

@@ -2,9 +2,10 @@ type infoProps = {
   top: number;
   left: number;
   currentInfo: string;
+  labels: string;
 };
 
-const Info = ({ top, left, currentInfo }: infoProps) => {
+const Info = ({ top, left, labels, currentInfo }: infoProps) => {
   return (
     <div
       style={{
@@ -13,7 +14,7 @@ const Info = ({ top, left, currentInfo }: infoProps) => {
       }}
       className="absolute animate-floatingWindowIn p-[1rem] bg-white rounded-lg border shadow-xl"
     >
-      <p className="mb-[1rem]">关联总结：</p>
+      <p className="mb-[1rem]">{labels}</p>
       <p className="text-sm">{currentInfo}</p>
     </div>
   );

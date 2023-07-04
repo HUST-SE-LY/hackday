@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import avatar from "/src/assets/avatar.svg";
 import mindMapSvg from '/src/assets/modeMindmap.svg'
 import dendrogramSvg from '/src/assets/modeDendrogram.svg'
+import { Link } from "react-router-dom";
 type navigatorProps = {
   changeMode: () => void;
   onExport: () => void;
@@ -78,7 +79,10 @@ const Navigator = observer(({ changeMode,onExport: exportImage }: navigatorProps
         </div>
       </div>
       <div className="rounded-full w-[2rem] h-[2rem] cursor-pointer">
-        <img src={avatar} alt="" />
+        <Link to="/user">
+            <img src={avatar} alt="" />
+        </Link>
+        
       </div>
       <div className="w-[2rem]"></div>
     </div>

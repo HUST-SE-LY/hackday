@@ -12,6 +12,7 @@ const Login = observer(() => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [verify, setVerify] = useState("");
+  const [waiting, setWaiting] = useState(false);
   const [method, setMethod] = useState(Method.verifyLogin);
   return (
     <div className="w-screen h-screen">
@@ -19,7 +20,7 @@ const Login = observer(() => {
         <img src={logo} className="h-[30px] ml-[50px]" />
       </div>
       <div className="grid gap-[5rem] grid-cols-2 p-[5rem] w-full">
-        <div className="">
+        <div className="max-w-[30rem]">
           <img src={signIn} className="h-[8rem] animate-title0In origin-bottom" />
           <div className="mt-[3rem] opacity-0 animate-floatIn w-full h-fit p-[4rem] border-[2px] border-black rounded-[12px]">
             <div className="flex pb-[0.5rem] mb-[1rem] text-lg relative gap-[3em]">
@@ -60,7 +61,7 @@ const Login = observer(() => {
                       placeholder="请输入验证码"
                     />
                     <button className="bg-black flex-shrink-0 text-white rounded-full ml-[auto] px-[1rem] w-fit">
-                      获取验证码
+                      {!waiting ? "获取验证码": "冷却中"}
                     </button>
                   </div>
                   <button className="w-full bg-black text-white text-center py-[0.8rem] mt-[2rem] rounded-full">
