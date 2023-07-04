@@ -54,6 +54,14 @@ export default {
             transform: 'translateY(0)',
             opacity: 1,
           }
+        },
+        fadeIn: {
+          from: {
+            opacity: 0,
+          },
+          to: {
+            opacity: 1,
+          }
         }
       },
       animation: {
@@ -64,6 +72,7 @@ export default {
         imageIn: 'imageIn 0.3s 1.2s ease-in-out forwards',
         buttonIn: "buttonIn 0.3s 1.2s ease-in-out forwards",
         floatIn: "floatIn 0.5s 0.3s ease-in-out forwards",
+        floatingWindowIn: "fadeIn 0.3s ease-in-out forwards",
       }
     },
   },

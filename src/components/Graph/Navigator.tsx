@@ -10,9 +10,10 @@ import mindMapSvg from '/src/assets/modeMindmap.svg'
 import dendrogramSvg from '/src/assets/modeDendrogram.svg'
 type navigatorProps = {
   changeMode: () => void;
+  onExport: () => void;
 };
 
-const Navigator = observer(({ changeMode }: navigatorProps) => {
+const Navigator = observer(({ changeMode,onExport: exportImage }: navigatorProps) => {
   return (
     <div className="bg-black w-full basis-[3rem] flex items-center gap-[1rem]">
       <img src={logoInGraph} alt="" className="h-[2rem] ml-[50px]" />
@@ -32,12 +33,8 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
             "absolute top-[calc(100%_+_8px)]  right-0 w-36 bg-white rounded shadow-md flex flex-col gap-[0.5rem] items-center py-2 invisible group-hover:visible"
           }
         >
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
+          <div onClick={exportImage} className=" cursor-pointer flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
             导出为PNG
-          </div>
-          <img src="/src/assets/divideLine.svg" alt="" />
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
-            导出为PDF
           </div>
         </div>
       </div>
