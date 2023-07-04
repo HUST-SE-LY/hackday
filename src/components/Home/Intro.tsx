@@ -41,7 +41,7 @@ const Intro = () => {
       <div className="relative w-[900px] flex-shrink-0  h-[full] flex justify-center items-center">
         <PhysicsCanvas ref={physicsCanvas} />
       </div>
-      <div className="bg-black animate-floatIn opacity-0 p-[2rem] pt-[5rem] m-[2rem] rounded-2xl gap-[5rem] flex justify-center flex-col items-center self-center  h-fit ml-[auto] w-full">
+      <div className="bg-black max-w-[40rem] mx-auto animate-floatIn opacity-0 p-[2rem] pt-[5rem] m-[2rem] rounded-2xl gap-[5rem] flex justify-center flex-col items-center self-center  h-fit ml-[auto] w-full">
         <div className="flex items-center">
           <input
             value={keyWord}
