@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import G6, { NodeConfig, TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
 import Navigator from '../components/Graph/Navigator'
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
+import getColor from "../utils/getColor";
 
 const Graph = observer(() => {
   const graphContainer = useRef<HTMLDivElement>(null);
@@ -14,61 +16,81 @@ const Graph = observer(() => {
     top: 0,
     left: 0,
   });
-  const changeMod = useCallback(() => {
+
+  const changeTitle = useCallback(() => {
     if(graph.current) {
-      graphStore.changeMode();
-      G6.Util.traverseTree(data, (subtree:NodeConfig) => {
-        console.log(subtree.id)
-        graph.current?.updateItem(subtree.id, {
-          type: 'circle',
-        })
+      graph.current.updateItem(graphStore.currentId, {
+        label: title,
+        size: title.length*16+32
       })
+      graph.current.fitCenter();
+    }
+  },[title])
+  const data = useMemo(
+    () => ({
+      id: "root",
+      type: "circle",
+      size: 128,
+      label: "请创建关键词",
+      style: {
+        fill: "black",
+        stroke: "transparent",
+        cursor: "pointer",
+      },
+      labelCfg: {
+        style: {
+          fill: "white",
+          fontSize: 16,
+        },
+      },
+    }),
+    []
+  );
+
+  const changeMod = useCallback(() => {
+    if (graph.current) {
+      graphStore.changeMode();
+      G6.Util.traverseTree(data, (subtree: NodeConfig) => {
+        console.log(subtree.id);
+        graph.current?.updateItem(subtree.id, {
+          type: "circle",
+        });
+      });
       graph.current.updateLayout({
         type: "dendrogram",
         direction: "LR",
         radial: true,
         nodeSep: 100,
         rankSep: 100,
-      })
-      console.log(data)
-      graph.current.fitView()
-      graph.current.paint()
-
+      });
+      console.log(data);
+      graph.current.fitView();
+      graph.current.paint();
     }
-
-  },[])
-  const data = useMemo(
-    () => ({
-      id: "root",
-      label: "root",
-      type: 'circle',
-      children: [
-        {
-          type: 'rect',
-          id: "child1",
-          label: "child1",
-        },
-        {
-          type: 'rect',
-          id: "child2",
-          label: "child2",
-        },
-      ],
-    }),
-    []
-  );
+  }, [data]);
 
   function addTitle() {
-    graph.current &&
-      graph.current.addChild(
-        {
-          id: title,
-          label: title,
-          type: graphStore.currentMode === 'mindmap' ? 'rect' : 'circle'
+    if(graph.current) {
+      graph.current.addChild({
+        id: title,
+        size: title.length*16+32,
+        label: title,
+        style: {
+          fill: getColor(),
+          stroke: "transparent",
+          cursor: "pointer",
         },
-        graphStore.currentId
-      );
-    graph.current?.fitView()
+        labelCfg: {
+          style: {
+            fill: "white",
+            fontSize: 16,
+          },
+        },
+        type: "circle",
+      },graphStore.currentId)
+      graph.current.fitCenter;
+    }
+
   }
 
   useEffect(() => {
@@ -77,9 +99,12 @@ const Graph = observer(() => {
       container: graphContainer.current!, // 指定挂载容器
       width: 800, // 图的宽度
       height: 500, // 图的高度
+      modes: {
+        default: ["drag-canvas", "zoom-canvas", "drag-node"], // 允许拖拽画布、放缩画布、拖拽节点
+      },
       nodeStateStyles: {
         hover: {
-          fill: "rgb(233, 213, 255)",
+          opacity: 0.75,
         },
         focus: {
           stroke: "#ec4899",
@@ -87,7 +112,14 @@ const Graph = observer(() => {
         },
       },
       defaultEdge: {
-        
+        style: {
+          endArrow: {
+            path: G6.Arrow.circle(5, 10),
+            fill: 'black',
+            stroke: "transparent",
+            d: 10,
+          },
+        },
       },
       layout: {
         type: "mindmap",
@@ -95,27 +127,39 @@ const Graph = observer(() => {
         getHGap: () => {
           return 50;
         },
-        getVGap:() => {
-          return 50
-        }
+        getVGap: () => {
+          return 50;
+        },
       },
     });
     graph.current.data(data);
     graph.current.render();
     graph.current.fitCenter();
     graph.current.on("node:mouseenter", (evt) => {
-      const { item } = evt;
-      graph.current && item && graph.current.setItemState(item, "hover", true);
+      let { item } = evt;
+      console.log(item);
+      if (graph.current && item) {
+        while (item) {
+          console.log(item);
+          graph.current.setItemState(item, "hover", true);
+          item = item._cfg!.parent;
+        }
+      }
     });
 
     graph.current.on("node:mouseleave", (evt) => {
-      const { item } = evt;
-      graph.current && item && graph.current.setItemState(item, "hover", false);
+      let { item } = evt;
+      if (graph.current && item) {
+        while (item) {
+          graph.current.setItemState(item, "hover", false);
+          item = item._cfg!.parent;
+        }
+      }
     });
     graph.current.on("click", (evt) => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
-        console.log(item)
+        console.log(item);
         graph.current.setItemState(graphStore.currentId, "focus", false);
         graphStore.changeId(item._cfg.id as string);
         graph.current.setItemState(item, "focus", true);
@@ -153,6 +197,12 @@ const Graph = observer(() => {
         className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
       >
         切换状态
+      </button>
+      <button
+        onClick={changeTitle}
+        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
+      >
+        更改描述
       </button>
     </div>
   );
