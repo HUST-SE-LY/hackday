@@ -7,6 +7,7 @@ const Intro = () => {
   const physicsCanvas = useRef<ElementRef<typeof PhysicsCanvas>>(null);
   const [keyWord, setKeyWord] = useState("");
   const container = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if(container.current) {
       const observer = new IntersectionObserver((entries) => {
@@ -40,12 +41,12 @@ const Intro = () => {
       <div className="relative w-[900px] flex-shrink-0  h-[full] flex justify-center items-center">
         <PhysicsCanvas ref={physicsCanvas} />
       </div>
-      <div className="bg-black gap-[110px] flex justify-center flex-col items-center  h-full ml-[auto] w-full">
+      <div className="bg-black animate-floatIn opacity-0 p-[2rem] pt-[5rem] m-[2rem] rounded-2xl gap-[5rem] flex justify-center flex-col items-center self-center  h-fit ml-[auto] w-full">
         <div className="flex items-center">
           <input
             value={keyWord}
             onChange={(e) => setKeyWord(e.target.value)}
-            className="block text-lg w-[20rem] h-[3rem] rounded-[5px_0_0_5px] outline-none pl-[2rem] "
+            className="block text-lg w-[20rem] h-[3rem] rounded-full outline-none pl-[2rem] "
             placeholder="测试关键词"
             type="text"
           />
@@ -53,7 +54,7 @@ const Intro = () => {
             onClick={() => {
               submit();
             }}
-            className="flex justify-center items-center bg-[#4318FF] h-[3rem] w-[4rem] rounded-[0_5px_5px_0]"
+            className="flex justify-center items-center bg-[#4318FF] h-[3rem] w-[4rem] rounded-full"
           >
             <img className=" scale-50" src={rightArrow} />
           </button>

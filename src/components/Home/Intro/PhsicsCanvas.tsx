@@ -130,7 +130,7 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
     
     <div ref={rightBorder} className="h-[900px] w-[1px] absolute"></div>
     <div ref={leftBorder} className="h-[900px] w-[1px] absolute "></div>
-    <div ref={ground} className="bg-black absolute w-[900px] h-[20px]"></div>
+    <div ref={ground} className="bg-black absolute w-[100vw] h-[20px]"></div>
   </div>;
 });
 

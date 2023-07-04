@@ -44,6 +44,16 @@ export default {
             transform: 'translateX(0)',
             opacity: 1,
           }
+        },
+        floatIn: {
+          from: {
+            transform: 'translateY(50px)',
+            opacity: 0,
+          },
+          to: {
+            transform: 'translateY(0)',
+            opacity: 1,
+          }
         }
       },
       animation: {
@@ -52,7 +62,8 @@ export default {
         title1In: 'titleIn 0.3s 0.3s ease-in-out forwards',
         title2In: 'titleIn 0.3s 0.6s ease-in-out forwards',
         imageIn: 'imageIn 0.3s 1.2s ease-in-out forwards',
-        buttonIn: "buttonIn 0.3s 1.2s ease-in-out forwards"
+        buttonIn: "buttonIn 0.3s 1.2s ease-in-out forwards",
+        floatIn: "floatIn 0.5s 0.3s ease-in-out forwards",
       }
     },
   },
