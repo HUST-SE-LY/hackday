@@ -20,20 +20,16 @@ const FloatingWindow = observer(({top, left}: FloatingWindowProps) => {
       <span className="font-[600] text-zinc-400 float-right">Ctrl+L</span>
     </div>
     <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
-      <span>添加子元素</span>
+      <span>自定义子元素</span>
       <span className="font-[600] text-zinc-400 float-right">Tab</span> 
     </div>
     <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
-      <span>添加同级元素</span>
+      <span>自定义同级元素</span>
       <span className="font-[600] text-zinc-400 float-right">Enter</span> 
     </div>
     <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>删除</span>
       <span className="font-[600] text-zinc-400 float-right">退格</span> 
-    </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
-      <span>全选</span>
-      <span className="font-[600] text-zinc-400 float-right">Ctrl+A</span> 
     </div>
     <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>撤销</span>

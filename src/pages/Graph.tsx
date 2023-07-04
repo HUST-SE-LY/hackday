@@ -3,6 +3,7 @@ import G6, { TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
 import Navigator from '../components/Graph/Navigator'
+import Operator from '../components/Graph/Operator'
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
 import getColor from "../utils/getColor";
@@ -176,35 +177,40 @@ const Graph = observer(() => {
   }, [data]);
 
   return (
-    <div className="flex flex-col relative justify-center items-center gap-[1rem]">
+    <>
       <Navigator changeMode={changeMod}></Navigator>
-      <div ref={graphContainer}></div>
-      {showFloatingWindow ? <FloatingWindow {...currentPos} /> : null}
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        type="text"
-        className="border-purple-200 outline-none transition-all focus:border-[2px] focus:border-purple-500 focus:shadow-purple-200 hover:shadow rounded-full px-[1rem] border-[1px]"
-      />
-      <button
-        onClick={addTitle}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        添加节点
-      </button>
-      <button
-        onClick={changeMod}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        切换状态
-      </button>
-      <button
-        onClick={changeTitle}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        更改描述
-      </button>
-    </div>
+      <div className="flex">
+        <Operator></Operator>
+        <div className="flex-auto flex flex-col relative justify-center items-center gap-[1rem]">
+          <div ref={graphContainer}></div>
+          {showFloatingWindow ? <FloatingWindow {...currentPos} /> : null}
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            type="text"
+            className="border-purple-200 outline-none transition-all focus:border-[2px] focus:border-purple-500 focus:shadow-purple-200 hover:shadow rounded-full px-[1rem] border-[1px]"
+          />
+          <button
+            onClick={addTitle}
+            className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
+          >
+            添加节点
+          </button>
+          <button
+            onClick={changeMod}
+            className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
+          >
+            切换状态
+          </button>
+          <button
+            onClick={changeTitle}
+            className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
+          >
+            更改描述
+          </button>
+        </div>
+      </div>
+    </>
   );
 });
 

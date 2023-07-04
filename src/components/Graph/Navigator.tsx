@@ -8,18 +8,19 @@ import { observer } from "mobx-react-lite";
 import avatar from "/src/assets/avatar.svg";
 import mindMapSvg from '/src/assets/modeMindmap.svg'
 import dendrogramSvg from '/src/assets/modeDendrogram.svg'
+import divideLineSvg from '/src/assets/divideLine.svg'
 type navigatorProps = {
   changeMode: () => void;
 };
 
 const Navigator = observer(({ changeMode }: navigatorProps) => {
   return (
-    <div className="bg-black w-full basis-[3rem] flex items-center gap-[1rem]">
+    <div className="bg-zinc-800 w-full h-[3rem] flex items-center gap-[1rem] fixed z-[999]">
       <img src={logoInGraph} alt="" className="h-[2rem] ml-[50px]" />
       <div className="flex-auto text-center text-lg text-neutral-300">
         画布名
       </div>
-      <div className="rounded-lg flex justify-center items-center relative w-[2rem] h-[2rem] transition-all bg-white group hover:bg-indigo-600 cursor-pointer">
+      <div className="rounded-lg flex justify-center items-center relative w-[2rem] h-[2rem] transition-all bg-white group hover:bg-indigo-600">
         <img
           src={uploadBlackSvg}
           className="w-[1.5rem] group-hover:hidden"
@@ -32,11 +33,11 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
             "absolute top-[calc(100%_+_8px)]  right-0 w-36 bg-white rounded shadow-md flex flex-col gap-[0.5rem] items-center py-2 invisible group-hover:visible"
           }
         >
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
+          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200  cursor-pointer">
             导出为PNG
           </div>
-          <img src="/src/assets/divideLine.svg" alt="" />
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
+          <img src={divideLineSvg} alt="" />
+          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200 cursor-pointer">
             导出为PDF
           </div>
         </div>
