@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import G6, { NodeConfig, TreeGraph } from "@antv/g6";
+import G6, { TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
 import Navigator from '../components/Graph/Navigator'
@@ -50,24 +50,24 @@ const Graph = observer(() => {
   const changeMod = useCallback(() => {
     if (graph.current) {
       graphStore.changeMode();
-      G6.Util.traverseTree(data, (subtree: NodeConfig) => {
-        console.log(subtree.id);
-        graph.current?.updateItem(subtree.id, {
-          type: "circle",
-        });
-      });
-      graph.current.updateLayout({
-        type: "dendrogram",
-        direction: "LR",
-        radial: true,
-        nodeSep: 100,
-        rankSep: 100,
-      });
-      console.log(data);
-      graph.current.fitView();
-      graph.current.paint();
+      // G6.Util.traverseTree(data, (subtree: NodeConfig) => {
+      //   console.log(subtree.id);
+      //   graph.current?.updateItem(subtree.id, {
+      //     type: "circle",
+      //   });
+      // });
+      // graph.current.updateLayout({
+      //   type: "dendrogram",
+      //   direction: "LR",
+      //   radial: true,
+      //   nodeSep: 100,
+      //   rankSep: 100,
+      // });
+      // console.log(data);
+      // graph.current.fitCenter();
+      // graph.current.paint();
     }
-  }, [data]);
+  }, []);
 
   function addTitle() {
     if(graph.current) {
@@ -177,7 +177,7 @@ const Graph = observer(() => {
 
   return (
     <div className="flex flex-col relative justify-center items-center gap-[1rem]">
-      <Navigator changeMode={changeMod} currentPos={currentPos}></Navigator>
+      <Navigator changeMode={changeMod}></Navigator>
       <div ref={graphContainer}></div>
       {showFloatingWindow ? <FloatingWindow {...currentPos} /> : null}
       <input
