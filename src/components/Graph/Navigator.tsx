@@ -6,6 +6,8 @@ import linkBlackSvg from "/src/assets/linkBlack.svg";
 import linkSvg from "/src/assets/link.svg";
 import { observer } from "mobx-react-lite";
 import avatar from "/src/assets/avatar.svg";
+import mindMapSvg from '/src/assets/modeMindmap.svg'
+import dendrogramSvg from '/src/assets/modeDendrogram.svg'
 type navigatorProps = {
   changeMode: () => void;
 };
@@ -61,7 +63,7 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
           }`}
         >
           <img
-            src="/src/assets/modeMindmap.svg"
+            src={mindMapSvg}
             alt=""
             className={
               "w-[1.5rem] h-[1.5rem] translate-y-[2px]" +
@@ -69,7 +71,7 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
             }
           />
           <img
-            src="/src/assets/modeDendrogram.svg"
+            src={dendrogramSvg}
             alt=""
             className={
               "w-[1.5rem] h-[1.5rem] translate-y-[2px]" +
