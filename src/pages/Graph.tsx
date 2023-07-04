@@ -2,7 +2,7 @@
 import G6, { TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
-import Navigator from '../components/Graph/Navigator'
+import Navigator from "../components/Graph/Navigator";
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
 import getColor from "../utils/getColor";
@@ -10,22 +10,19 @@ import getColor from "../utils/getColor";
 const Graph = observer(() => {
   const graphContainer = useRef<HTMLDivElement>(null);
   const graph = useRef<TreeGraph>();
-  const [title, setTitle] = useState("");
+  const input = useRef<HTMLInputElement>(null);
   const [showFloatingWindow, setShowFloatingWindow] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const [currentPos, setCurrentPos] = useState({
     top: 0,
     left: 0,
   });
+  const [inputPos, setInputPos] = useState({
+    top: 0,
+    left: 0,
+  });
 
-  const changeTitle = useCallback(() => {
-    if(graph.current) {
-      graph.current.updateItem(graphStore.currentId, {
-        label: title,
-        size: title.length*16+32
-      })
-      graph.current.fitCenter();
-    }
-  },[title])
   const data = useMemo(
     () => ({
       id: "root",
@@ -69,28 +66,89 @@ const Graph = observer(() => {
     }
   }, []);
 
-  function addTitle() {
-    if(graph.current) {
-      graph.current.addChild({
-        id: title,
-        size: title.length*16+32,
-        label: title,
-        style: {
-          fill: getColor(),
-          stroke: "transparent",
-          cursor: "pointer",
-        },
-        labelCfg: {
+  async function addChild() {
+    if (graph.current) {
+      graph.current.addChild(
+        {
+          id: "111",
+          size: 128,
+          label: "双击编辑文字",
           style: {
-            fill: "white",
-            fontSize: 16,
+            fill: getColor(),
+            stroke: "transparent",
+            cursor: "pointer",
           },
+          labelCfg: {
+            style: {
+              fill: "white",
+              fontSize: 16,
+            },
+          },
+          type: "circle",
         },
-        type: "circle",
-      },graphStore.currentId)
+        graphStore.currentId
+      );
       graph.current.fitCenter;
     }
+    setShowFloatingWindow(false)
+  }
 
+  async function deleteNode() {
+    if(graph.current) {
+      const currentNode = graph.current.findById(graphStore.currentId);
+      if(!currentNode._cfg!.children&&currentNode._cfg!.id!=="root") {
+        graph.current.removeChild(graphStore.currentId);
+      }
+    }
+    setShowFloatingWindow(false)
+  }
+
+  async function addNeighbor() {
+    if (graph.current) {
+      const currentNode = graph.current.findById(graphStore.currentId);
+      if (currentNode._cfg && currentNode._cfg.parent) {
+        const parentNode = currentNode._cfg.parent;
+        graph.current.addChild(
+          {
+            id: "l",
+            size: 128,
+            label: "双击编辑文字",
+            style: {
+              fill: getColor(),
+              stroke: "transparent",
+              cursor: "pointer",
+            },
+            labelCfg: {
+              style: {
+                fill: "white",
+                fontSize: 16,
+              },
+            },
+            type: "circle",
+          },
+          parentNode
+        );
+        graph.current.fitCenter;
+      }
+    }
+    setShowFloatingWindow(false)
+  }
+
+  async function changeLabel(e: React.KeyboardEvent<HTMLInputElement>) {
+    if(e.code === 'Enter') {
+      if(graph.current) {
+        graph.current.updateItem(graphStore.currentId, {
+          label: inputValue,
+          size: inputValue.length * 16 + 32
+        })
+        setInputValue("");
+        setShowInput(false)
+      }
+    }
+  }
+
+  async function think() {
+    //todo
   }
 
   useEffect(() => {
@@ -107,29 +165,26 @@ const Graph = observer(() => {
           opacity: 0.75,
         },
         focus: {
-          stroke: "#ec4899",
+          stroke: "#4318FF",
           lineWidth: 2,
         },
       },
       defaultEdge: {
         style: {
           endArrow: {
-            path: G6.Arrow.circle(5, 10),
-            fill: 'black',
+            path: G6.Arrow.circle(5, 5),
+            fill: "black",
             stroke: "transparent",
             d: 10,
           },
         },
       },
       layout: {
-        type: "mindmap",
-        direction: "H",
-        getHGap: () => {
-          return 50;
-        },
-        getVGap: () => {
-          return 50;
-        },
+        type: "dendrogram",
+        direction: "LR",
+        radial: true,
+        nodeSep: 100,
+        rankSep: 200,
       },
     });
     graph.current.data(data);
@@ -137,10 +192,8 @@ const Graph = observer(() => {
     graph.current.fitCenter();
     graph.current.on("node:mouseenter", (evt) => {
       let { item } = evt;
-      console.log(item);
       if (graph.current && item) {
         while (item) {
-          console.log(item);
           graph.current.setItemState(item, "hover", true);
           item = item._cfg!.parent;
         }
@@ -159,18 +212,36 @@ const Graph = observer(() => {
     graph.current.on("click", (evt) => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
-        console.log(item);
         graph.current.setItemState(graphStore.currentId, "focus", false);
         graphStore.changeId(item._cfg.id as string);
         graph.current.setItemState(item, "focus", true);
         setCurrentPos({
-          top: evt.clientY,
-          left: evt.clientX,
+          top: evt.clientY + 20,
+          left: evt.clientX + 20,
         });
         setShowFloatingWindow(true);
       } else {
         graph.current?.setItemState(graphStore.currentId, "focus", false);
         setShowFloatingWindow(false);
+      }
+    });
+    graph.current.on("dblclick", (evt) => {
+      const { item } = evt;
+      if (item && item._cfg && graph.current) {
+        setShowFloatingWindow(false);
+        console.log(item);
+        const { x, y } = item.getModel(); // 获得该节点的位置，对应 pointX/pointY 坐标
+        const clientXY = graph.current.getClientByPoint(x!, y!);
+        setInputPos({
+          top: clientXY.y - 16,
+          left: clientXY.x - 32,
+        })
+        graph.current.updateItem(item, {
+          label: "",
+        })
+
+        setShowInput(true);
+
       }
     });
   }, [data]);
@@ -179,31 +250,28 @@ const Graph = observer(() => {
     <div className="flex flex-col relative justify-center items-center gap-[1rem]">
       <Navigator changeMode={changeMod}></Navigator>
       <div ref={graphContainer}></div>
-      {showFloatingWindow ? <FloatingWindow {...currentPos} /> : null}
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        type="text"
-        className="border-purple-200 outline-none transition-all focus:border-[2px] focus:border-purple-500 focus:shadow-purple-200 hover:shadow rounded-full px-[1rem] border-[1px]"
-      />
-      <button
-        onClick={addTitle}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        添加节点
-      </button>
-      <button
-        onClick={changeMod}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        切换状态
-      </button>
-      <button
-        onClick={changeTitle}
-        className="w-fit bg-gradient-to-br from-purple-500 to-pink-500 px-[2rem] py-[0.5rem] text-white rounded-full"
-      >
-        更改描述
-      </button>
+      {showInput ? (
+        <input
+          style={{
+            top: `${inputPos.top}px`,
+            left: `${inputPos.left}px`,
+          }}
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
+          onKeyUp={(e) => changeLabel(e)}
+          ref={input}
+          className="fixed w-[64px] h-[32px] outline-none bg-transparent text-white text-center border-b-white border-b-[1px]"
+        />
+      ) : null}
+      {showFloatingWindow ? (
+        <FloatingWindow
+          onThink={think}
+          onDeleteNode={deleteNode}
+          onAddChild={addChild}
+          onAddNeighbor={addNeighbor}
+          {...currentPos}
+        />
+      ) : null}
     </div>
   );
 });

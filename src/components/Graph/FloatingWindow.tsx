@@ -4,9 +4,13 @@ import { useEffect, useRef } from "react";
 type FloatingWindowProps = {
   top: number,
   left: number,
+  onDeleteNode: () => Promise<void>,
+  onAddChild: () => Promise<void>,
+  onAddNeighbor: () => Promise<void>,
+  onThink: () => Promise<void>,
 }
 
-const FloatingWindow = observer(({top, left}: FloatingWindowProps) => {
+const FloatingWindow = observer(({top, left, onAddChild: addChild, onAddNeighbor:addNeighbor, onDeleteNode: deleteNode}: FloatingWindowProps) => {
   const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if(container.current) {
@@ -15,33 +19,29 @@ const FloatingWindow = observer(({top, left}: FloatingWindowProps) => {
     }
   },[left, top])
   return <div className="absolute z-[99999] bg-white flex flex-col gap-[0.25rem] p-[0.75rem] shadow-xl rounded w-48" ref={container}>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+    <div className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>自动联想</span>
-      <span className="font-[600] text-zinc-400 float-right">Ctrl+L</span>
+      <span className="font-mono text-sm text-zinc-300 float-right">Ctrl+L</span>
     </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
-      <span>添加子元素</span>
-      <span className="font-[600] text-zinc-400 float-right">Tab</span> 
+    <div onClick={() => addChild()} className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+      <span>添加自定义子元素</span>
+      <span className="font-mono text-sm text-zinc-300 float-right">Tab</span> 
     </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+    <div onClick={() => addNeighbor()} className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>添加同级元素</span>
-      <span className="font-[600] text-zinc-400 float-right">Enter</span> 
+      <span className="font-mono text-sm text-zinc-300 float-right">Enter</span> 
     </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+    <div onClick={() => deleteNode()} className="text-sm rounded cursor-pointer transition-all p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>删除</span>
-      <span className="font-[600] text-zinc-400 float-right">退格</span> 
+      <span className="font-mono text-sm text-zinc-300 float-right">退格</span> 
     </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
-      <span>全选</span>
-      <span className="font-[600] text-zinc-400 float-right">Ctrl+A</span> 
-    </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+    <div className="text-sm rounded p-1 cursor-pointer transition-all hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>撤销</span>
-      <span className="font-[600] text-zinc-400 float-right">Ctrl+Z</span> 
+      <span className="font-mono text-sm text-zinc-300 float-right">Ctrl+Z</span> 
     </div>
-    <div className="text-sm rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+    <div className="text-sm rounded cursor-pointer p-1 transition-all hover:bg-indigo-600 hover:text-white hover:font-[600]">
       <span>下一步</span>
-      <span className="font-[600] text-zinc-400 float-right">Ctrl+Shift+Z</span> 
+      <span className="font-mono text-sm text-zinc-300 float-right">Ctrl+Shift+Z</span> 
     </div>
   </div>
 })
