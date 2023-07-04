@@ -1,6 +1,7 @@
 import G6, { NodeConfig, TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
+import Navigator from '../components/Graph/Navigator'
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
 
@@ -132,6 +133,7 @@ const Graph = observer(() => {
 
   return (
     <div className="flex flex-col relative justify-center items-center gap-[1rem]">
+      <Navigator changeMode={changeMod} currentPos={currentPos}></Navigator>
       <div ref={graphContainer}></div>
       {showFloatingWindow ? <FloatingWindow {...currentPos} /> : null}
       <input
