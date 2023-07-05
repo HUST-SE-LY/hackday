@@ -341,7 +341,7 @@ const Graph = observer(() => {
         setCurrentInfo(map.get(item._cfg!.id!) || "没有关联到该点的逻辑");
         setInfoPos({
           top: evt.clientY + 20,
-          left: evt.clientX + 20,
+          left: evt.clientX + 20 - 320,
         });
         while (item) {
           graph.current.setItemState(item, "hover", true);
@@ -375,7 +375,7 @@ const Graph = observer(() => {
         graph.current.setItemState(item, "focus", true);
         setCurrentPos({
           top: evt.clientY + 20,
-          left: evt.clientX + 20,
+          left: evt.clientX + 20 - 320,
         });
         setShowFloatingWindow(true);
         setShowInfo(false);
