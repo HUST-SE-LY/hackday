@@ -21,7 +21,7 @@ const Login = observer(() => {
     sendVerifyCode({phone}).then(() => setWaiting(true)).catch(err => console.error(err));
   },[phone])
   const login = useCallback(() => {
-    loginOrRegister({phone, code: verify})
+    loginOrRegister({phone, code: verify}).then(() => navigate("/graph"))
   },[phone, verify])
   const loginWithPwd = useCallback(() => {
     loginByPassword({phone, password})

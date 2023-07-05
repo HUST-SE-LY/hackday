@@ -8,6 +8,7 @@ import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
 import getColor from "../utils/getColor";
 import Info from "../components/Graph/Info";
+import { thinkInfo } from "../utils/request";
 
 const Graph = observer(() => {
   const graphContainer = useRef<HTMLDivElement>(null);
@@ -258,7 +259,61 @@ const Graph = observer(() => {
 
 
   async function think() {
-    //todo
+
+    const info = graphStore.infoMap.get(graphStore.currentId) as string;
+    console.log(info)
+    const label = graph.current!.findById(graphStore.currentId)!._cfg!.model!.label as string;
+    const res = await thinkInfo(label, info);
+    console.log(res)
+    graphStore.setInfo(graphStore.id.toString(), res[0])
+    if (graph.current) {
+      graphStore.currentMode === "mindmap"
+        ? graph.current.addChild(
+            {
+              id: graphStore.id.toString(),
+              size: [res[1].length*16+32, 50],
+              label: res[1],
+              style: {
+                fill: getColor(),
+                stroke: "transparent",
+                cursor: "pointer",
+                radius: 5,
+              },
+              labelCfg: {
+                style: {
+                  fill: "white",
+                  fontSize: 16,
+                },
+              },
+              type: "rect",
+            },
+            graphStore.currentId
+          )
+        : graph.current.addChild(
+            {
+              id: graphStore.id.toString(),
+              size: res[1].length*16+32,
+              label: res[1],
+              style: {
+                fill: getColor(),
+                stroke: "transparent",
+                cursor: "pointer",
+              },
+              labelCfg: {
+                style: {
+                  fill: "white",
+                  fontSize: 16,
+                },
+              },
+              type: "circle",
+            },
+            graphStore.currentId
+          );
+      graphStore.addId();
+      graph.current.fitCenter;
+    }
+
+
   }
 
   const exportImage = useCallback(() => {

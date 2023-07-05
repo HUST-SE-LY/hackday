@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import graphStore from "../../stores/graph";
+import { think } from "../../utils/request";
 
 type FloatingWindowProps = {
   top: number;
@@ -20,6 +21,7 @@ const FloatingWindow = observer(
     left,
     canThink,
     canDelete,
+    onThink: think,
     onAddChild: addChild,
     onAddNeighbor: addNeighbor,
     onDeleteNode: deleteNode,
@@ -39,7 +41,7 @@ const FloatingWindow = observer(
         ref={container}
       >
         {canThink ? (
-          <div className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+          <div onClick={() => think()} className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
             <span>自动联想</span>
             <span className="font-mono text-sm text-zinc-300 float-right">
               Ctrl+L

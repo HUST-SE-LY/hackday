@@ -1,6 +1,7 @@
 import { ElementRef, useEffect, useRef, useState } from "react";
 import PhysicsCanvas from "./Intro/PhsicsCanvas";
 import rightArrow from "../../assets/rightArrow.svg";
+import { homeThink } from "../../utils/request";
 
 
 const Intro = () => {
@@ -31,9 +32,15 @@ const Intro = () => {
       observer.observe(container.current)
     }
   },[])
-  function submit() {
-    keyWord && physicsCanvas.current?.addBox(keyWord);
-    setKeyWord("");
+  async function submit() {
+    if(keyWord) {
+      const res = await homeThink(keyWord) as string[];
+      res.forEach((key) => {
+        if(physicsCanvas.current) {
+          physicsCanvas.current.addBox(key)
+        }
+      })
+    }
   }
 
   return (

@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 class GraphStore {
+  id = 0
   currentId = "root";
   currentMode = "dendrogram";
   currentHover = "";
@@ -19,6 +20,9 @@ class GraphStore {
   }
   setInfo(id: string, info:string) {
     this.infoMap.set(id, info);
+  }
+  addId() {
+    this.id++;
   }
 }
 
