@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import graphStore from "../../stores/graph";
-import { think } from "../../utils/request";
 
 type FloatingWindowProps = {
   top: number;

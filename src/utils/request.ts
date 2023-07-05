@@ -87,18 +87,25 @@ export async function thinkInfo(label: string, info: string) {
   const axios = getAiAxios();
   const res1 = await axios.post("", {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词联想助手，你的回答必须是一个关键词，不能有其他内容。我会给出一段已有内容，你根据这段内容联想出一个关键词。我给出的内容是：${info}`}]
+    "messages": [{"role": "system", "content": `你是我的关键词联想助手，你的回答必须是一个关键词，不能有其他内容。我会给出一段已有内容，你根据这段内容联想出一个关键词。我给出的内容是：${info}`
+
+  }]
   })
   const newLabel = res1.data.choices[0].message.content as string
   function sleep (time:number) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
+  console.log(1)
   
-  await sleep(2000)
+  await sleep(1000)
+
+  console.log(2)
 
   const res = await axios.post("", {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话，不能有任何多余内容。我会给出一段已有内容和一个关键词，你需要联想出它们之间的关系。我给出的内容是：${info}，我给出的关键词是：${label}`}]
+    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话，不能有任何多余内容，这段话不要超过50字。我会给出一段已有内容和一个关键词，你需要联想出它们之间的关系。我给出的内容是：${info}，我给出的关键词是：${label}`}],
+    "max_tokens": 50
+
   })
   const newInfo = res.data.choices[0].message.content as string
 

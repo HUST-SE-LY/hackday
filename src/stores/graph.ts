@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 class GraphStore {
-  id = 0
+  id = 114514
   currentId = "root";
   currentMode = "dendrogram";
   currentHover = "";
