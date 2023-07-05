@@ -1,9 +1,9 @@
 declare type loginOrRegisterParams ={
-  phoneNumber: string;
-  verifyCode: string;
+  phone: string;
+  code: string;
 }
 declare type loginByPasswordParams ={
-  phoneNumber: string;
+  phone: string;
   password: string;
 }
 declare type changePasswordParams ={
@@ -36,5 +36,5 @@ declare type deleteNodeParams ={
   id: string,
 }
 declare type sendVerifyCodeParams = {
-  phoneNumber: string
+  phone: string
 }

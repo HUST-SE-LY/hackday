@@ -20,55 +20,55 @@ interface Routers {
 
 const routers:Routers = {
   sendVerifyCode: {
-    method: "",
-    path: ""
+    method: "post",
+    path: "/user/getCode"
   },
   loginOrRegister: {
-    method: "",
-    path: ""
+    method: "post",
+    path: "/user/loginWithCode"
   },
   loginByPassword: {
-    method: "",
-    path: ""
+    method: "post",
+    path: "/user/loginWithPwd"
   },
   changePassword: {
-    method: "",
-    path: ""
+    method: "post",
+    path: "/user/updatePwd"
   },
   getGraph: {
-    method: "",
+    method: "get",
     path: ""
   },
   checkLogin: {
-    method: "",
-    path: ""
+    method: "get",
+    path: "user/userInfo"
   },
   thinkInHome: {
-    method: "",
+    method: "post",
     path: ""
   },
   changeNodeLabel: {
-    method: "",
+    method: "post",
     path: ""
   },
   addNodeChild: {
-    method: "",
+    method: "post",
     path: ""
   },
   think: {
-    method: "",
+    method: "post",
     path: ""
   },
   autoLink: {
-    method: "",
+    method: "post",
     path: ""
   },
   createLink: {
-    method: "",
+    method: "post",
     path: ""
   },
   deleteNode: {
-    method: "",
+    method: "delete",
     path: ""
   }
 }
