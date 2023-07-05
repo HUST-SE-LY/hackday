@@ -104,7 +104,7 @@ export async function thinkInfo(label: string, info: string) {
   const res = await axios.post("", {
     "model": "gpt-3.5-turbo",
     "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话，不能有任何多余内容，这段话不要超过50字。我会给出一段已有内容和一个关键词，你需要联想出它们之间的关系。我给出的内容是：${info}，我给出的关键词是：${label}`}],
-    "max_tokens": 50
+    "max_tokens": 200
 
   })
   const newInfo = res.data.choices[0].message.content as string
