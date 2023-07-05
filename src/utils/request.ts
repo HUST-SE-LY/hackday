@@ -83,32 +83,17 @@ export async function homeThink(key: string) {
   return (res.data.choices[0].message.content as string).split(" ");
 }
 
-export async function thinkInfo(label: string, info: string) {
+export async function thinkInfo( info: string) {
   const axios = getAiAxios();
-  const res1 = await axios.post("", {
-    "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词联想助手，你的回答必须是一个关键词，不能有其他内容。我会给出一段已有内容，你根据这段内容联想出一个关键词。我给出的内容是：${info}`
-
-  }]
-  })
-  const newLabel = res1.data.choices[0].message.content as string
-  function sleep (time:number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
   console.log(1)
-  
-  await sleep(1000)
-
-  console.log(2)
-
   const res = await axios.post("", {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话，不能有任何多余内容，这段话不要超过50字。我会给出一段已有内容和一个关键词，你需要联想出它们之间的关系。我给出的内容是：${info}，我给出的关键词是：${label}`}],
+    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话和一个关键词，它们之间用空格符隔开，注意必须使用空格符，并保证其余地方没有空格符，不能有任何多余内容，一段话不要超过50字。现在我会给出一段已有内容和，你需要根据已有内容联想出一个关联词，并叙述关联词和已有内容的关系。例如我的给出已有内容是：肯德基，你应该回答内容和格式应该是：炸鸡 肯德基里有炸鸡套餐。现在我给出的内容是：${info}`}],
     "max_tokens": 200
 
   })
-  const newInfo = res.data.choices[0].message.content as string
-
+  const newInfo = res.data.choices[0].message.content.split(" ")[1];
+  const newLabel = res.data.choices[0].message.content.split(" ")[0];
   return [newInfo, newLabel]
 }
 

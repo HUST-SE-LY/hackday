@@ -261,9 +261,12 @@ const Graph = observer(() => {
   async function think() {
 
     const info = graphStore.infoMap.get(graphStore.currentId) as string;
-    console.log(info)
-    const label = graph.current!.findById(graphStore.currentId)!._cfg!.model!.label as string;
-    const res = await thinkInfo(label, info);
+    let res
+    if(graphStore.currentId === 'root') {
+      res = await thinkInfo(graph.current!.findById('root')!._cfg!.model!.label! as string)
+    } else {
+      res = await thinkInfo(info);
+    }
     console.log(res)
     graphStore.setInfo(graphStore.id.toString(), res[0])
     if (graph.current) {
