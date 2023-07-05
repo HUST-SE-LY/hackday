@@ -80,47 +80,95 @@ const Graph = observer(() => {
   const changeMod = useCallback(() => {
     if (graph.current) {
       graphStore.changeMode();
-      // G6.Util.traverseTree(data, (subtree: NodeConfig) => {
-      //   console.log(subtree.id);
-      //   graph.current?.updateItem(subtree.id, {
-      //     type: "circle",
-      //   });
-      // });
-      // graph.current.updateLayout({
-      //   type: "dendrogram",
-      //   direction: "LR",
-      //   radial: true,
-      //   nodeSep: 100,
-      //   rankSep: 100,
-      // });
-      // console.log(data);
-      // graph.current.fitCenter();
+      console.log(graphStore.currentMode);
+      G6.Util.traverseTree(data, (subtree: NodeConfig) => {
+        graph.current!.updateItem(subtree.id, {
+          type: graphStore.currentMode === "mindmap" ? "rect" : "circle",
+          size: (subtree.label! as string).length * 16 + 32,
+        });
+        graphStore.currentMode === "mindmap"
+          ? graph.current!.updateItem(subtree.id, {
+              size: [(subtree.label! as string).length * 16 + 32, 50],
+              style: {
+                width: (subtree.label! as string).length * 16 + 32,
+                height: 50,
+                radius: 5,
+              },
+              labelCfg: {
+                position: "center",
+              },
+            })
+          : null;
+      });
+      graph.current.updateLayout(
+        graphStore.currentMode === "dendrogram"
+          ? {
+              type: "dendrogram",
+              direction: "LR",
+              radial: true,
+              nodeSep: 100,
+              rankSep: 100,
+            }
+          : {
+              type: "mindmap",
+              direction: "H",
+              getVGap: () => {
+                return 10;
+              },
+              getHGap: () => {
+                return 50;
+              },
+            }
+      );
+      graph.current.fitCenter();
       // graph.current.paint();
     }
-  }, []);
+  }, [data]);
 
   async function addChild() {
     if (graph.current) {
-      graph.current.addChild(
-        {
-          id: "111",
-          size: 128,
-          label: "双击编辑文字",
-          style: {
-            fill: getColor(),
-            stroke: "transparent",
-            cursor: "pointer",
-          },
-          labelCfg: {
-            style: {
-              fill: "white",
-              fontSize: 16,
+      graphStore.currentMode === "mindmap"
+        ? graph.current.addChild(
+            {
+              id: "111",
+              size: [128, 50],
+              label: "双击编辑文字",
+              style: {
+                fill: getColor(),
+                stroke: "transparent",
+                cursor: "pointer",
+                radius: 5,
+              },
+              labelCfg: {
+                style: {
+                  fill: "white",
+                  fontSize: 16,
+                },
+              },
+              type: "rect",
             },
-          },
-          type: "circle",
-        },
-        graphStore.currentId
-      );
+            graphStore.currentId
+          )
+        : graph.current.addChild(
+            {
+              id: "111",
+              size: 128,
+              label: "双击编辑文字",
+              style: {
+                fill: getColor(),
+                stroke: "transparent",
+                cursor: "pointer",
+              },
+              labelCfg: {
+                style: {
+                  fill: "white",
+                  fontSize: 16,
+                },
+              },
+              type: "circle",
+            },
+            graphStore.currentId
+          );
       graph.current.fitCenter;
     }
     setShowFloatingWindow(false);
@@ -141,26 +189,48 @@ const Graph = observer(() => {
       const currentNode = graph.current.findById(graphStore.currentId);
       if (currentNode._cfg && currentNode._cfg.parent) {
         const parentNode = currentNode._cfg.parent;
-        graph.current.addChild(
-          {
-            id: "l",
-            size: 128,
-            label: "双击编辑文字",
-            style: {
-              fill: getColor(),
-              stroke: "transparent",
-              cursor: "pointer",
-            },
-            labelCfg: {
-              style: {
-                fill: "white",
-                fontSize: 16,
+        graphStore.currentMode === "mindmap"
+          ? graph.current.addChild(
+              {
+                id: "l",
+                size: [128, 50],
+                label: "双击编辑文字",
+                style: {
+                  fill: getColor(),
+                  stroke: "transparent",
+                  cursor: "pointer",
+                  radius: 5,
+                },
+                labelCfg: {
+                  style: {
+                    fill: "white",
+                    fontSize: 16,
+                  },
+                },
+                type: "rect",
               },
-            },
-            type: "circle",
-          },
-          parentNode
-        );
+              parentNode
+            )
+          : graph.current.addChild(
+              {
+                id: "l",
+                size: 128,
+                label: "双击编辑文字",
+                style: {
+                  fill: getColor(),
+                  stroke: "transparent",
+                  cursor: "pointer",
+                },
+                labelCfg: {
+                  style: {
+                    fill: "white",
+                    fontSize: 16,
+                  },
+                },
+                type: "circle",
+              },
+              parentNode
+            );
         graph.current.fitCenter;
       }
     }

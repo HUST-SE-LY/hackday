@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 class GraphStore {
   currentId = "root";
-  currentMode = "mindmap";
+  currentMode = "dendrogram";
   currentHover = "";
   constructor() {
     makeAutoObservable(this);
