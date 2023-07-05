@@ -28,7 +28,7 @@ const Login = observer(() => {
   },[phone, password])
   useEffect(() => {
     checkLogin().then(() => navigate("/graph"))
-  })
+  },[])
   return (
     <div className="w-screen h-screen">
       <div className="h-[50px] w-full flex items-center pr-[100px] z-[9999]">
