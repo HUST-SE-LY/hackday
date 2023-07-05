@@ -5,7 +5,7 @@ import Input from "../components/Login/Input";
 import { useCallback, useEffect, useState } from "react";
 import Book from "../components/Login/Book";
 import { checkLogin, loginByPassword, loginOrRegister, sendVerifyCode } from "../utils/request";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 enum Method {
   verifyLogin = 0,
   passwordLogin,
@@ -32,7 +32,10 @@ const Login = observer(() => {
   return (
     <div className="w-screen h-screen">
       <div className="h-[50px] w-full flex items-center pr-[100px] z-[9999]">
-        <img src={logo} className="h-[30px] ml-[50px]" />
+        <Link to={"/"}>
+          <img src={logo} className="h-[30px] ml-[50px]" />
+        </Link>
+        
       </div>
       <div className="grid gap-[5rem] grid-cols-2 p-[5rem] w-full">
         <div className="max-w-[30rem]">
