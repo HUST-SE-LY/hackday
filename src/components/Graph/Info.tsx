@@ -12,7 +12,7 @@ const Info = ({ top, left, labels, currentInfo }: infoProps) => {
         top: `${top}px`,
         left: `${left}px`,
       }}
-      className="absolute animate-floatingWindowIn p-[1rem] bg-white rounded-lg border shadow-xl"
+      className="absolute animate-floatingWindowIn p-[1rem] bg-white/80 rounded-lg border shadow-xl"
     >
       <p className="mb-[1rem]">{labels}</p>
       <p className="text-sm">{currentInfo}</p>

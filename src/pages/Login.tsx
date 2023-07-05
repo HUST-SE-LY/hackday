@@ -2,8 +2,10 @@ import { observer } from "mobx-react-lite";
 import logo from "../assets/logo.svg";
 import signIn from "../assets/signIn.svg";
 import Input from "../components/Login/Input";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Book from "../components/Login/Book";
+import { checkLogin, loginByPassword, loginOrRegister, sendVerifyCode } from "../utils/request";
+import { useNavigate } from "react-router-dom";
 enum Method {
   verifyLogin = 0,
   passwordLogin,
@@ -14,6 +16,19 @@ const Login = observer(() => {
   const [verify, setVerify] = useState("");
   const [waiting, setWaiting] = useState(false);
   const [method, setMethod] = useState(Method.verifyLogin);
+  const navigate = useNavigate();
+  const sendCode = useCallback(() => {
+    sendVerifyCode({phone}).then(() => setWaiting(true)).catch(err => console.error(err));
+  },[phone])
+  const login = useCallback(() => {
+    loginOrRegister({phone, code: verify})
+  },[phone, verify])
+  const loginWithPwd = useCallback(() => {
+    loginByPassword({phone, password})
+  },[phone, password])
+  useEffect(() => {
+    checkLogin().then(() => navigate("/graph"))
+  },[])
   return (
     <div className="w-screen h-screen">
       <div className="h-[50px] w-full flex items-center pr-[100px] z-[9999]">
@@ -60,11 +75,11 @@ const Login = observer(() => {
                       type="text"
                       placeholder="请输入验证码"
                     />
-                    <button className="bg-black flex-shrink-0 text-white rounded-full ml-[auto] px-[1rem] w-fit">
+                    <button onClick={sendCode} className="bg-black flex-shrink-0 text-white rounded-full ml-[auto] px-[1rem] w-fit">
                       {!waiting ? "获取验证码": "冷却中"}
                     </button>
                   </div>
-                  <button className="w-full bg-black text-white text-center py-[0.8rem] mt-[2rem] rounded-full">
+                  <button onClick={login} className="w-full bg-black text-white text-center py-[0.8rem] mt-[2rem] rounded-full">
                     立即登录
                   </button>
                   <p className="text-[12px] text-gray-400 mt-[1rem]">
@@ -88,7 +103,7 @@ const Login = observer(() => {
                       placeholder="请输入密码"
                     />
                   </div>
-                  <button className="w-full bg-black text-white text-center py-[0.8rem] mt-[2rem] rounded-full">
+                  <button onClick={loginWithPwd} className="w-full bg-black text-white text-center py-[0.8rem] mt-[2rem] rounded-full">
                     立即登录
                   </button>
                   <p className="text-[12px] text-gray-400 mt-[1rem]">
