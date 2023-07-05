@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import tip1 from "/src/assets/tip1.svg";
 import tip2 from "/src/assets/tip2.svg";
 import tip3 from "/src/assets/tip3.svg";
+import arrow from "../../assets/titleArrow.svg";
 
 enum BookPage {
   first = 0,
@@ -65,13 +66,17 @@ const Book = () => {
         onClick={() => page !== BookPage.first && setPage(page - 1)}
         className="absolute z-1 left-0 bottom-[50%]"
       >
-        last
+        <div className="rounded-full w-[3rem] flex items-center justify-center h-[3rem] hover:animate-ping ">
+          <img src={arrow} className="w-[1rem] rotate-180" alt="" />
+        </div>
       </button>
       <button
         onClick={() => page !== BookPage.third && setPage(page + 1)}
         className="absolute right-0 bottom-[50%]"
       >
-        next
+        <div className="rounded-full w-[3rem] flex items-center justify-center h-[3rem] hover:animate-ping ">
+          <img src={arrow} className="w-[1rem]" alt="" />
+        </div>
       </button>
     </div>
   );
