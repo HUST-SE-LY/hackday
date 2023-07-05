@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import graphStore from "../../stores/graph";
 
 type FloatingWindowProps = {
@@ -11,6 +11,7 @@ type FloatingWindowProps = {
   onAddChild: () => Promise<void>;
   onAddNeighbor: () => Promise<void>;
   onThink: () => Promise<void>;
+  onAddLink: (value:string) => Promise<void>;
 };
 
 const FloatingWindow = observer(
@@ -22,8 +23,10 @@ const FloatingWindow = observer(
     onAddChild: addChild,
     onAddNeighbor: addNeighbor,
     onDeleteNode: deleteNode,
+    onAddLink: addLink,
   }: FloatingWindowProps) => {
     const container = useRef<HTMLDivElement>(null);
+    const [link, setLink] = useState("");
     useEffect(() => {
       if (container.current) {
         container.current.style.top = `${top}px`;
@@ -50,11 +53,17 @@ const FloatingWindow = observer(
                 Ctrl+L
               </span>
             </div>
-            <div className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+            <div className="text-sm group relative cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
               <span>手动关联</span>
               <span className="font-mono text-sm text-zinc-300 float-right">
                 Ctrl+L
               </span>
+              <div className="absolute invisible px-[1rem] group-hover:visible top-0 left-full">
+                <div className="p-[1rem] rounded-lg bg-white shadow-lg border">
+                  <textarea value={link} onChange={e => setLink(e.target.value)} placeholder="输入关联信息" onKeyUp={(e) => e.code === 'Enter' && (addLink(link).then(() => setLink("")))} className="bg-gray-100 placeholder:font-normal rounded-lg text-black p-[0.25rem] text-sm outline-none"></textarea>
+                </div>
+                
+              </div>
             </div>
           </>
         )}
@@ -89,18 +98,6 @@ const FloatingWindow = observer(
             </span>
           </div>
         ) : null}
-        <div className="text-sm rounded p-1 cursor-pointer transition-all hover:bg-indigo-600 hover:text-white hover:font-[600]">
-          <span>撤销</span>
-          <span className="font-mono text-sm text-zinc-300 float-right">
-            Ctrl+Z
-          </span>
-        </div>
-        <div className="text-sm rounded cursor-pointer p-1 transition-all hover:bg-indigo-600 hover:text-white hover:font-[600]">
-          <span>下一步</span>
-          <span className="font-mono text-sm text-zinc-300 float-right">
-            Ctrl+Shift+Z
-          </span>
-        </div>
       </div>
     );
   }

@@ -4,6 +4,7 @@ class GraphStore {
   currentId = "root";
   currentMode = "dendrogram";
   currentHover = "";
+  infoMap = new Map<string,string>();
   constructor() {
     makeAutoObservable(this);
   }
@@ -15,6 +16,9 @@ class GraphStore {
   }
   hover(id: string) {
     this.currentHover = id;
+  }
+  setInfo(id: string, info:string) {
+    this.infoMap.set(id, info);
   }
 }
 

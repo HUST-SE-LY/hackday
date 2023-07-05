@@ -2,8 +2,8 @@ import graphStore from "../../stores/graph";
 import logoInGraph from "/src/assets/logoInGraph.svg";
 import uploadSvg from "/src/assets/upload.svg";
 import uploadBlackSvg from "/src/assets/uploadBlack.svg";
-import linkBlackSvg from "/src/assets/linkBlack.svg";
-import linkSvg from "/src/assets/link.svg";
+// import linkBlackSvg from "/src/assets/linkBlack.svg";
+// import linkSvg from "/src/assets/link.svg";
 import { observer } from "mobx-react-lite";
 import avatar from "/src/assets/avatar.svg";
 import mindMapSvg from '/src/assets/modeMindmap.svg'
@@ -43,14 +43,14 @@ const Navigator = observer(({ changeMode,onExport: exportImage }: navigatorProps
           </div>
         </div>
       </div>
-      <div className="rounded-lg w-[2rem] group h-[2rem] flex justify-center items-center bg-white hover:bg-indigo-600 cursor-pointer">
+      {/* <div className="rounded-lg w-[2rem] group h-[2rem] flex justify-center items-center bg-white hover:bg-indigo-600 cursor-pointer">
         <img
           src={linkBlackSvg}
           className="w-[1.5rem] group-hover:hidden"
           alt=""
         />
         <img src={linkSvg} className="w-[1.5rem] hidden group-hover:block" />
-      </div>
+      </div> */}
       <div
         className="rounded-full bg-zinc-500 w-[4rem] h-[2rem] relative cursor-pointer"
         onClick={() => {

@@ -251,6 +251,12 @@ const Graph = observer(() => {
     }
   }
 
+  async function addLink(link:string) {
+    graphStore.setInfo(graphStore.currentId, link)
+    setShowFloatingWindow(false);
+  }
+
+
   async function think() {
     //todo
   }
@@ -264,7 +270,6 @@ const Graph = observer(() => {
   }, []);
 
   useEffect(() => {
-    const map = new Map<string, string>();
     graph.current = new G6.TreeGraph({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       container: graphContainer.current!, // 指定挂载容器
@@ -321,7 +326,7 @@ const Graph = observer(() => {
           cursor: "pointer",
         };
       } else {
-        map.set(subTree.id, subTree.info);
+        graphStore.setInfo(subTree.id, subTree.info);
         subTree.style = {
           fill: getColor(),
           stroke: "transparent",
@@ -338,7 +343,7 @@ const Graph = observer(() => {
         const labels: string[] = [];
         graphStore.hover(item._cfg!.id!);
         setShowInfo(true);
-        setCurrentInfo(map.get(item._cfg!.id!) || "没有关联到该点的逻辑");
+        setCurrentInfo(graphStore.infoMap.get(item._cfg!.id!) || "没有关联到该点的逻辑");
         setInfoPos({
           top: evt.clientY + 20,
           left: evt.clientX + 20 - 320,
@@ -365,7 +370,7 @@ const Graph = observer(() => {
     graph.current.on("click", (evt) => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
-        map.get(item._cfg!.id!) ? setCanThink(true) : setCanThink(false);
+        graphStore.infoMap.get(item._cfg!.id!) ? setCanThink(true) : setCanThink(false);
         if (item._cfg!.id === "root") {
           setCanDelete(false);
           setCanThink(true);
@@ -426,6 +431,7 @@ const Graph = observer(() => {
           ) : null}
           {showFloatingWindow ? (
             <FloatingWindow
+              onAddLink={addLink}
               canThink={canThink}
               canDelete={canDelete}
               onThink={think}
