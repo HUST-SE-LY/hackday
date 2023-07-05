@@ -29,7 +29,7 @@ const Operator = observer(({ data }: operatorProps) => {
         else { return <Folder></Folder> }
     }
     return (
-        <div className={`w-[20rem] h-screen bg-zinc-800 flex transition-transform duration-1000 ${isOperatorShow ? "" : " translate-x-[-18rem]"}`}>
+        <div className={`w-[20rem] z-[9999] absolute left-0 h-screen bg-zinc-800 flex transition-transform duration-1000 ${isOperatorShow ? "" : " translate-x-[-18rem]"}`}>
             {/* 面板主体 */}
             <div className="ml-[1.5rem] basis-[16.5rem] flex flex-col">
                 {/* 三个面板选项 */}

@@ -36,6 +36,7 @@ const Search = observer(({ data }: operatorProps) => {
   const onChange = (inputValue:string) => {
       setSearchResults([]);
       if (!inputValue) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filterResults:any[] = [];
       flatData.forEach((node) => {
         if (node.label.includes(inputValue)){
@@ -58,7 +59,7 @@ const Search = observer(({ data }: operatorProps) => {
         searchHistory.forEach((history) => {
           if (history.id === result.id){
             flag = 1;
-          };
+          }
         })
         if (flag) return;
         setSearchHistory([...searchHistory, result]);

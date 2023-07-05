@@ -273,8 +273,8 @@ const Graph = observer(() => {
     graph.current = new G6.TreeGraph({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       container: graphContainer.current!, // 指定挂载容器
-      width: 800, // 图的宽度
-      height: 500, // 图的高度
+      width: window.innerWidth, // 图的宽度
+      height: window.innerHeight, // 图的高度
       modes: {
         default: ["drag-canvas", "zoom-canvas", "drag-node"], // 允许拖拽画布、放缩画布、拖拽节点
       },
