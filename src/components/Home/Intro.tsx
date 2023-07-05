@@ -41,7 +41,7 @@ const Intro = () => {
       <div className="relative w-[900px] flex-shrink-0  h-[full] flex justify-center items-center">
         <PhysicsCanvas ref={physicsCanvas} />
       </div>
-      <div className="bg-black max-w-[40rem] mx-auto animate-floatIn opacity-0 p-[2rem] pt-[5rem] m-[2rem] rounded-2xl gap-[5rem] flex justify-center flex-col items-center self-center  h-fit ml-[auto] w-full">
+      <div className="bg-black max-w-[30rem] mx-auto animate-floatIn opacity-0 p-[2rem] pt-[5rem] m-[2rem] rounded-2xl gap-[5rem] flex justify-center flex-col items-center self-center  h-fit ml-[auto] w-full">
         <div className="flex items-center">
           <input
             value={keyWord}
@@ -60,7 +60,7 @@ const Intro = () => {
           </button>
         </div>
         <p className="text-white leading-[2rem] w-[24rem] text-lg">
-          测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字测试文字
+        输入关键词，让Aidea帮你延伸思维的触角，进行无尽创造
         </p>
       </div>
     </div>

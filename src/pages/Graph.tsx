@@ -286,6 +286,8 @@ const Graph = observer(() => {
       },
       defaultEdge: {
         style: {
+          stroke: "l(0) 0:#ffffff 0.5:#4318FF 1:#ffffff",
+          lineWidth: 2,
           endArrow: {
             path: G6.Arrow.circle(5, 5),
             fill: "black",
@@ -342,10 +344,10 @@ const Graph = observer(() => {
         });
         while (item) {
           graph.current.setItemState(item, "hover", true);
-          labels.push(item._cfg!.model!.label as string);
+          labels.unshift(item._cfg!.model!.label as string);
           item = item._cfg!.parent;
         }
-        setInfoLabels(labels.join(" "));
+        setInfoLabels(labels.join(" -> "));
       }
     });
 
