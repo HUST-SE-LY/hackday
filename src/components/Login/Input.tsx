@@ -20,7 +20,7 @@ const Input = ({ content, onSetContent, placeholder, type, isError }: inputProps
         onBlur={() => !content&&setFocus(false)}
         onChange={(e) => onSetContent(e.target.value)}
       />
-      <p className={`absolute pointer-events-none transition-all text-gray-400 ${focus ? "top-[-20px] left-0" : "top-[0.5rem] left-[1rem]"}`}>{placeholder}</p>
+      <p className={`absolute pointer-events-none transition-all text-gray-400 ${focus ? "top-[-20px] text-sm left-0" : "top-[0.5rem] left-[1rem]"}`}>{placeholder}</p>
     </div>
   );
 };

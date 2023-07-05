@@ -8,12 +8,14 @@ import { observer } from "mobx-react-lite";
 import avatar from "/src/assets/avatar.svg";
 import mindMapSvg from '/src/assets/modeMindmap.svg'
 import dendrogramSvg from '/src/assets/modeDendrogram.svg'
-import divideLineSvg from '/src/assets/divideLine.svg'
+import { Link } from "react-router-dom";
+
 type navigatorProps = {
   changeMode: () => void;
+  onExport: () => void;
 };
 
-const Navigator = observer(({ changeMode }: navigatorProps) => {
+const Navigator = observer(({ changeMode,onExport: exportImage }: navigatorProps) => {
   return (
     <div className="bg-zinc-800 w-full h-[3rem] flex items-center gap-[1rem] fixed z-[999]">
       <img src={logoInGraph} alt="" className="h-[2rem] ml-[50px]" />
@@ -33,12 +35,8 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
             "absolute top-[calc(100%_+_8px)]  right-0 w-36 bg-white rounded shadow-md flex flex-col gap-[0.5rem] items-center py-2 invisible group-hover:visible"
           }
         >
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200  cursor-pointer">
+          <div onClick={exportImage} className=" cursor-pointer flex-auto text-center px-4 py-1 rounded hover:bg-gray-200">
             导出为PNG
-          </div>
-          <img src={divideLineSvg} alt="" />
-          <div className="flex-auto text-center px-4 py-1 rounded hover:bg-gray-200 cursor-pointer">
-            导出为PDF
           </div>
         </div>
       </div>
@@ -82,7 +80,10 @@ const Navigator = observer(({ changeMode }: navigatorProps) => {
         </div>
       </div>
       <div className="rounded-full w-[2rem] h-[2rem] cursor-pointer">
-        <img src={avatar} alt="" />
+        <Link to="/user">
+            <img src={avatar} alt="" />
+        </Link>
+        
       </div>
       <div className="w-[2rem]"></div>
     </div>
