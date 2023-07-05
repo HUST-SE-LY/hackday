@@ -1,6 +1,6 @@
 ## Aibrain
 
-AIbrian 项目的前端部分
+Aibrain 项目的前端部分
 
 ps：因为时间原因，未实现与后端对接
 
