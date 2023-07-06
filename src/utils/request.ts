@@ -83,11 +83,11 @@ export async function homeThink(key: string) {
   return (res.data.choices[0].message.content as string).split(" ");
 }
 
-export async function thinkInfo(label:string, info: string) {
+export async function thinkInfo(label:string, info: string, labels: string) {
   const axios = getAiAxios();
   const res = await axios.post("", {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话和一个关键词，它们之间用空格符隔开，注意必须使用空格符，并保证其余地方没有空格符，不能有任何多余内容，一段话不要超过50字。现在我会给出一个或一组关键词（用逗号隔开）和这些关键词所对应的内容，你需要根据关键词和它的内容联想出一个另一个关联词，并解释它和已有内容的关系，注意你得出的关键词不能和我给出的关键词的任何一个相同。例如我的给出已有内容是：肯德基，你应该回答内容和格式应该是：炸鸡 肯德基里有炸鸡套餐。现在我给出的关键词是：${label}，它的内容是${info}`}],
+    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话和一个关键词，它们之间用空格符隔开，注意必须使用空格符，并保证其余地方没有空格符，不能有任何多余内容，一段话不要超过50字。现在我会给出一个或一组关键词（用逗号隔开）和这些关键词所对应的内容以及多个禁用词（用，隔开），你需要根据关键词和它的内容联想出一个另一个关联词，并解释它和已有内容的关系，注意你得出的关键词不能和禁用词中的任何一个相同。例如我的给出已有内容是：肯德基，禁用词列表是：可乐，汉堡。你应该回答内容和格式应该是：炸鸡 肯德基里有炸鸡套餐。现在我给出的关键词是：${label}，它的内容是${info}，禁用词列表是${labels}`}],
     "max_tokens": 200
   })
   const newInfo = res.data.choices[0].message.content.split(" ")[1];
@@ -106,11 +106,11 @@ export async function autoCreateLink(oldLabel:string,newLabel: string, info: str
 
 }
 
-export async function createInfoFromRoot(label: string) {
+export async function createInfoFromRoot(label: string, labels: string) {
   const axios = getAiAxios();
   const res = await axios.post("", {
     "model": "gpt-3.5-turbo",
-    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话和一个关键词，它们之间用空格符隔开，注意必须使用空格符，并保证其余地方没有空格符，不能有任何多余内容，一段话不要超过50字。现在我会给出一个关键词，你需要根据关键词联想出一个另一个关联词，并解释它和已有内容的关系。例如我的给出已有内容是：肯德基，你回答的内容和格式应该是：炸鸡 肯德基里有炸鸡套餐。现在我给出的关键词是${label}`}],
+    "messages": [{"role": "system", "content": `你是我的关键词总结助手，你的回答必须是总结出的一段话和一个关键词，它们之间用空格符隔开，注意必须使用空格符，并保证其余地方没有空格符，不能有任何多余内容，一段话不要超过50字。现在我会给出一个关键词和多个禁用词（用，隔开），你需要根据关键词联想出一个另一个关联词，并解释它和已有内容的关系，注意，你联想出的关键词不能在禁用词列表中。例如我的给出已有内容是：肯德基，禁用词列表是：炸鸡，汉堡，你回答的内容和格式应该是：可乐 肯德基会卖可乐。现在我给出的关键词是${label}，禁用词列表是${labels}`}],
     "max_tokens": 200
   })
   const newInfo = res.data.choices[0].message.content.split(" ")[1];

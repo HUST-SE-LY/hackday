@@ -2,7 +2,7 @@ import axios from "axios";
 
 function getAiAxios() {
   const instance = axios.create({
-    timeout: 3000000,
+    timeout: 20000,
     baseURL: "https://api.openai.com/v1/chat/completions"
   });
 

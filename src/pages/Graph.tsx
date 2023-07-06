@@ -241,10 +241,22 @@ const Graph = observer(() => {
     setShowFloatingWindow(false);
   }
 
+  const getAllLabels = useCallback(() => {
+    const result:string[] = []
+    if(graph.current) {
+      const nodes = graph.current.getNodes();
+      nodes.forEach(node => {
+        result.push(node!._cfg!.model!.label as string)
+      })
+    }
+    return result.join("，")
+  },[])
+
   const think = useCallback(async () => {
     if (isThinking) return;
     setIsThinking(true);
     const info = graphStore.infoMap.get(graphStore.currentId) as string;
+    const labels = getAllLabels();
     let label = graph.current!.findById(graphStore.currentId)!._cfg!.model!
       .label! as string;
     let parent = graph.current!.findById(graphStore.currentId)!._cfg!.parent!;
@@ -255,9 +267,9 @@ const Graph = observer(() => {
     let res;
     try {
       if (graphStore.currentId === "root") {
-        res = await thinkInfo(label, info);
+        res = await thinkInfo(label, info, labels);
       } else {
-        res = await createInfoFromRoot(label);
+        res = await createInfoFromRoot(label, labels);
       }
     } finally {
       setIsThinking(false);
