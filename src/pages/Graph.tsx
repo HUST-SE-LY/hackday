@@ -2,13 +2,18 @@
 import G6, { NodeConfig, TreeGraph } from "@antv/g6";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FloatingWindow from "../components/Graph/FloatingWindow";
-import Navigator from '../components/Graph/Navigator'
-import Operator from '../components/Graph/Operator'
+import Navigator from "../components/Graph/Navigator";
+import Operator from "../components/Graph/Operator";
 import { observer } from "mobx-react-lite";
 import graphStore from "../stores/graph";
 import getColor from "../utils/getColor";
 import Info from "../components/Graph/Info";
-import { thinkInfo } from "../utils/request";
+import {
+  autoCreateLink,
+  createInfoFromRoot,
+  createLinkFromRoot,
+  thinkInfo,
+} from "../utils/request";
 
 const Graph = observer(() => {
   const graphContainer = useRef<HTMLDivElement>(null);
@@ -34,12 +39,14 @@ const Graph = observer(() => {
   });
   const [canThink, setCanThink] = useState(true);
   const [canDelete, setCanDelete] = useState(true);
+  const [isThinking, setIsThinking] = useState(false);
+  const [isLinking, setIsLinking] = useState(false);
   const data = useMemo(
     () => ({
       id: "root",
       // type: "circle",
       // size: 128,
-      label: "疯狂星期四",
+      label: "双击修改主题",
       // style: {
       //   fill: "black",
       //   stroke: "transparent",
@@ -51,30 +58,6 @@ const Graph = observer(() => {
       //     fontSize: 16,
       //   },
       // },
-      children: [
-        {
-          id: "1",
-          label: "kfc",
-          info: "疯狂星期四是kfc旗下的活动",
-        },
-        {
-          id: "2",
-          label: "网络",
-          info: "疯狂星期四是一个网络热梗",
-          children: [
-            {
-              id: "4",
-              label: "年轻文化",
-              info: "疯狂星期四是一个网络热梗,代表了年轻文化",
-            },
-          ],
-        },
-        {
-          id: "3",
-          label: "折扣",
-          info: "疯狂星期四是肯德基的折扣活动",
-        },
-      ],
     }),
     []
   );
@@ -179,8 +162,9 @@ const Graph = observer(() => {
   async function deleteNode() {
     if (graph.current) {
       const currentNode = graph.current.findById(graphStore.currentId);
-      if (!currentNode._cfg!.children && currentNode._cfg!.id !== "root") {
+      if (currentNode._cfg!.id !== "root") {
         graph.current.removeChild(graphStore.currentId);
+        graphStore.changeId("root");
       }
     }
     setShowFloatingWindow(false);
@@ -252,29 +236,41 @@ const Graph = observer(() => {
     }
   }
 
-  async function addLink(link:string) {
-    graphStore.setInfo(graphStore.currentId, link)
+  async function addLink(link: string) {
+    graphStore.setInfo(graphStore.currentId, link);
     setShowFloatingWindow(false);
   }
 
-
-  async function think() {
-
+  const think = useCallback(async () => {
+    if (isThinking) return;
+    setIsThinking(true);
     const info = graphStore.infoMap.get(graphStore.currentId) as string;
-    let res
-    if(graphStore.currentId === 'root') {
-      res = await thinkInfo(graph.current!.findById('root')!._cfg!.model!.label! as string)
-    } else {
-      res = await thinkInfo(info);
+    let label = graph.current!.findById(graphStore.currentId)!._cfg!.model!
+      .label! as string;
+    let parent = graph.current!.findById(graphStore.currentId)!._cfg!.parent!;
+    while (parent) {
+      label = `${parent._cfg.model.label}，${label}`;
+      parent = parent._cfg.parent;
     }
-    console.log(res)
-    graphStore.setInfo(graphStore.id.toString(), res[0])
+    let res;
+    try {
+      if (graphStore.currentId === "root") {
+        res = await thinkInfo(label, info);
+      } else {
+        res = await createInfoFromRoot(label);
+      }
+    } finally {
+      setIsThinking(false);
+      setShowFloatingWindow(false);
+    }
+
+    graphStore.setInfo(graphStore.id.toString(), res[0]);
     if (graph.current) {
       graphStore.currentMode === "mindmap"
         ? graph.current.addChild(
             {
               id: graphStore.id.toString(),
-              size: [res[1].length*16+32, 50],
+              size: [res[1].length * 16 + 32, 50],
               label: res[1],
               style: {
                 fill: getColor(),
@@ -295,7 +291,7 @@ const Graph = observer(() => {
         : graph.current.addChild(
             {
               id: graphStore.id.toString(),
-              size: res[1].length*16+32,
+              size: res[1].length * 16 + 32,
               label: res[1],
               style: {
                 fill: getColor(),
@@ -315,9 +311,35 @@ const Graph = observer(() => {
       graphStore.addId();
       graph.current.fitCenter;
     }
+  }, [isThinking]);
 
-
-  }
+  const autoLink = useCallback(async () => {
+    if (isLinking) return;
+    setIsLinking(true);
+    let res = "";
+    const currentNode = graph.current!.findById(graphStore.currentId)!;
+    console.log(currentNode._cfg);
+    let parent = graph.current!.findById(currentNode!._cfg!.parent!._cfg!.id);
+    console.log(parent);
+    const newLabel = currentNode._cfg!.model!.label! as string;
+    const info = graphStore.infoMap.get(parent._cfg!.id!)!;
+    let oldLabel = "";
+    while (parent) {
+      oldLabel = (parent._cfg!.model!.label as string) + oldLabel;
+      parent = parent._cfg!.parent;
+    }
+    try {
+      if (currentNode._cfg!.parent!._cfg!.id === "root") {
+        res = await createLinkFromRoot(newLabel, oldLabel);
+      } else {
+        res = await autoCreateLink(oldLabel, newLabel, info);
+      }
+    } finally {
+      setIsLinking(false);
+      setShowFloatingWindow(false);
+    }
+    graphStore.setInfo(graphStore.currentId, res);
+  }, [isLinking]);
 
   const exportImage = useCallback(() => {
     if (graph.current) {
@@ -401,7 +423,9 @@ const Graph = observer(() => {
         const labels: string[] = [];
         graphStore.hover(item._cfg!.id!);
         setShowInfo(true);
-        setCurrentInfo(graphStore.infoMap.get(item._cfg!.id!) || "没有关联到该点的逻辑");
+        setCurrentInfo(
+          graphStore.infoMap.get(item._cfg!.id!) || "没有关联到该点的逻辑"
+        );
         setInfoPos({
           top: evt.clientY + 20,
           left: evt.clientX + 20,
@@ -428,10 +452,14 @@ const Graph = observer(() => {
     graph.current.on("click", (evt) => {
       const { item } = evt;
       if (item && item._cfg && graph.current) {
-        graphStore.infoMap.get(item._cfg!.id!) ? setCanThink(true) : setCanThink(false);
+        graphStore.infoMap.get(item._cfg!.id!)
+          ? setCanThink(true)
+          : setCanThink(false);
         if (item._cfg!.id === "root") {
           setCanDelete(false);
           setCanThink(true);
+        } else {
+          setCanDelete(true);
         }
         graph.current.setItemState(graphStore.currentId, "focus", false);
         graphStore.changeId(item._cfg.id as string);
@@ -471,7 +499,7 @@ const Graph = observer(() => {
     <>
       <Navigator changeMode={changeMod} onExport={exportImage}></Navigator>
       <div className="flex">
-        <Operator data = {data}></Operator>
+        <Operator data={data}></Operator>
         <div className="flex-auto flex flex-col relative justify-center items-center gap-[1rem]">
           <div ref={graphContainer}></div>
           {showInput ? (
@@ -489,6 +517,9 @@ const Graph = observer(() => {
           ) : null}
           {showFloatingWindow ? (
             <FloatingWindow
+              isThinking={isThinking}
+              isLinking={isLinking}
+              onAutoLink={autoLink}
               onAddLink={addLink}
               canThink={canThink}
               canDelete={canDelete}

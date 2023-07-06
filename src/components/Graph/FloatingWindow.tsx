@@ -7,11 +7,14 @@ type FloatingWindowProps = {
   left: number;
   canDelete: boolean;
   canThink: boolean;
+  isThinking: boolean;
+  isLinking: boolean;
   onDeleteNode: () => Promise<void>;
   onAddChild: () => Promise<void>;
   onAddNeighbor: () => Promise<void>;
   onThink: () => Promise<void>;
-  onAddLink: (value:string) => Promise<void>;
+  onAddLink: (value: string) => Promise<void>;
+  onAutoLink: () => Promise<void>;
 };
 
 const FloatingWindow = observer(
@@ -20,11 +23,14 @@ const FloatingWindow = observer(
     left,
     canThink,
     canDelete,
+    isLinking,
+    isThinking,
     onThink: think,
     onAddChild: addChild,
     onAddNeighbor: addNeighbor,
     onDeleteNode: deleteNode,
     onAddLink: addLink,
+    onAutoLink: autoLink,
   }: FloatingWindowProps) => {
     const container = useRef<HTMLDivElement>(null);
     const [link, setLink] = useState("");
@@ -40,7 +46,12 @@ const FloatingWindow = observer(
         ref={container}
       >
         {canThink ? (
-          <div onClick={() => think()} className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+          <div
+            onClick={() => think()}
+            className={`text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600] ${
+              isThinking ? "animate-pulse text-gray-400" : ""
+            }`}
+          >
             <span>自动联想</span>
             <span className="font-mono text-sm text-zinc-300 float-right">
               Ctrl+L
@@ -48,7 +59,12 @@ const FloatingWindow = observer(
           </div>
         ) : (
           <>
-            <div className="text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600]">
+            <div
+              onClick={() => autoLink()}
+              className={`text-sm cursor-pointer transition-all rounded p-1 hover:bg-indigo-600 hover:text-white hover:font-[600] ${
+                isLinking ? "animate-pulse text-gray-400" : ""
+              }:`}
+            >
               <span>自动关联</span>
               <span className="font-mono text-sm text-zinc-300 float-right">
                 Ctrl+L
@@ -61,9 +77,17 @@ const FloatingWindow = observer(
               </span>
               <div className="absolute invisible px-[1rem] group-hover:visible top-0 left-full">
                 <div className="p-[1rem] rounded-lg bg-white shadow-lg border">
-                  <textarea value={link} onChange={e => setLink(e.target.value)} placeholder="输入关联信息" onKeyUp={(e) => e.code === 'Enter' && (addLink(link).then(() => setLink("")))} className="bg-gray-100 placeholder:font-normal rounded-lg text-black p-[0.25rem] text-sm outline-none"></textarea>
+                  <textarea
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    placeholder="输入关联信息"
+                    onKeyUp={(e) =>
+                      e.code === "Enter" &&
+                      addLink(link).then(() => setLink(""))
+                    }
+                    className="bg-gray-100 placeholder:font-normal rounded-lg text-black p-[0.25rem] text-sm outline-none"
+                  ></textarea>
                 </div>
-                
               </div>
             </div>
           </>

@@ -3,43 +3,52 @@ import PhysicsCanvas from "./Intro/PhsicsCanvas";
 import rightArrow from "../../assets/rightArrow.svg";
 import { homeThink } from "../../utils/request";
 
-
 const Intro = () => {
   const physicsCanvas = useRef<ElementRef<typeof PhysicsCanvas>>(null);
   const [keyWord, setKeyWord] = useState("");
+  const [loading, setLoading] = useState(false);
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if(container.current) {
-      const observer = new IntersectionObserver((entries) => {
-        if(entries[0].intersectionRatio > 0) {
-          console.log("ok")
-          if (physicsCanvas.current) {
-            physicsCanvas.current.addBox("疯狂星期四");
-            setTimeout(() => {
-              if (physicsCanvas.current) {
-                physicsCanvas.current.addBox("肯德基");
-                physicsCanvas.current.addBox("麦当劳");
-                physicsCanvas.current.addBox("华莱士");
-              }
-            }, 1000);
-            observer.disconnect();
+    if (container.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].intersectionRatio > 0) {
+            console.log("ok");
+            if (physicsCanvas.current) {
+              physicsCanvas.current.addBox("疯狂星期四");
+              setTimeout(() => {
+                if (physicsCanvas.current) {
+                  physicsCanvas.current.addBox("肯德基");
+                  physicsCanvas.current.addBox("麦当劳");
+                  physicsCanvas.current.addBox("华莱士");
+                }
+              }, 1000);
+              observer.disconnect();
+            }
           }
+        },
+        {
+          threshold: [0, 0.1, 0.2],
         }
-      },{
-        threshold: [0,0.1,0.2]
-      })
-      observer.observe(container.current)
+      );
+      observer.observe(container.current);
     }
-  },[])
+  }, []);
   async function submit() {
-    if(keyWord) {
-      const res = await homeThink(keyWord) as string[];
-      res.forEach((key) => {
-        if(physicsCanvas.current) {
-          physicsCanvas.current.addBox(key)
-        }
-      })
+    if(loading) return;
+    setLoading(true);
+    if (keyWord) {
+      try {
+        const res = (await homeThink(keyWord)) as string[];
+        res.forEach((key) => {
+          if (physicsCanvas.current) {
+            physicsCanvas.current.addBox(key);
+          }
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
@@ -61,13 +70,13 @@ const Intro = () => {
             onClick={() => {
               submit();
             }}
-            className="flex justify-center items-center bg-[#4318FF] h-[3rem] w-[4rem] rounded-full"
+            className={`flex justify-center items-center bg-[#4318FF] transition-all h-[3rem] w-[4rem] rounded-full ${loading ? 'bg-blue-600 animate-pulse': ''}`}
           >
             <img className=" scale-50" src={rightArrow} />
           </button>
         </div>
         <p className="text-white leading-[2rem] w-[24rem] text-lg">
-        输入关键词，让Aidea帮你延伸思维的触角，进行无尽创造
+          输入关键词，让Aidea帮你延伸思维的触角，进行无尽创造
         </p>
       </div>
     </div>
