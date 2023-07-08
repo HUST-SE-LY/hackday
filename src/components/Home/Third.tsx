@@ -8,8 +8,8 @@ const Third = () => {
       <div className="absolute z-[10] w-[30vw] top-[20%] left-[10%]">
         <img className="w-[30vw]" src={serviceProspect} />
         <img className="w-[8vw] mt-[3rem]" src={serviceProspectTitle} />
-        <p className="text-white w-[25vw] mt-[10vh] leading-[48px] text-xl">
-        生成脑图，让灵感可视，思路更清晰
+        <p className="text-white w-[27vw] mt-[10vh] leading-[48px] text-xl">
+        Aidea是您的有力助手，帮助您发现新的思路、独特的观点和创新的解决方案。利用脑图生成功能，您可以快速将您的想法和概念以图形的形式呈现出来，将灵感可视化，帮助您更直观地理解关系和层次，使思路更加清晰明了。
         </p>
 
       </div>
