@@ -123,7 +123,7 @@ const PhysicsCanvas = forwardRef((_props,ref:Ref<{addBox:(keyword:string) => voi
     }
   },[engine])
   return <div className="w-full h-full" ref={container}>
-    <div className="absolute top-[50px] left-[40px]">
+    <div className="absolute top-[20vh] left-[10vw]">
       <img src={keywordsAssociation} alt="" />
       <img src={keywordsAssociationZh} className="mt-[20px]" alt="" />
     </div>

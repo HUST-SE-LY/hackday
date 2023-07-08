@@ -28,11 +28,11 @@ const Title = () => {
       />
       <img
         src={imageB}
-        className="absolute animate-imageIn opacity-0 w-[45vw] right-[7%] bottom-[15%] z-[9]"
+        className="absolute animate-imageIn opacity-0 h-[70vh] right-[7%] bottom-[15%] z-[9]"
         alt=""
       />
       <Link to={"/graph"}>
-        <div className="absolute animate-buttonIn opacity-0 flex cursor-pointer justify-center group items-center left-[3rem] bottom-[10rem] bg-black rounded-full w-[20rem] h-[6rem]">
+        <div className="absolute animate-buttonIn opacity-0 flex cursor-pointer justify-center group items-center left-[8vw] bottom-[10rem] bg-black rounded-full w-[20rem] h-[6rem]">
           <div className="h-[3rem] overflow-hidden hover:text-black relative w-[12rem] rounded-full border-white border-[1px] text-center text-white text-[24px] leading-[3rem] font-light before:w-[0] before:transition-all before:bg-white before:absolute before:top-0 before:left-0 before:hover:w-full before:h-full">
             <p className="absolute z-[999] top-[0] left-[1rem] w-[10rem] h-[3rem] transition-all tracking-tight font-mono">
               Let's Start

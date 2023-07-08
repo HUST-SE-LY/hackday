@@ -15,7 +15,7 @@ const Third = () => {
       </div>
       <div className="absolute bottom-[10vh] z-10 w-[40vw] h-[70vh] left-[50vw]">
         <video className="h-[60vh] border rounded-xl w-[30vh] z-10 object-cover absolute left-[0] top-[0] " muted loop autoPlay src="/video.mp4"></video>
-      <img className="absolute w-[30vh] bottom-[5vh]  z-0 left-[28vh]" src={thirdImg} />
+      <img className="absolute w-[25vw] bottom-[5vh]  z-0 left-[28vh]" src={thirdImg} />
       </div>
       
     </div>
