@@ -2,8 +2,6 @@
 
 Aibrain 项目的前端部分
 
-ps：因为时间原因，未实现与后端对接
-
 [website](https://hackday-two.vercel.app/)
 
 using:
@@ -26,4 +24,3 @@ build
 - 画布页
 - 自动联想
 - 画布操作
- ps：因为没有后端的原因，现在增加节点和同级节点只能加一个，联想可以一直联想
